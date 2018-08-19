@@ -1,0 +1,17 @@
+%{
+#include "tokens.h"
+%}
+
+%%
+
+[a-zA-Z][_a-zA-Z0-9]*	return TK_IDENTIFIER;
+[1-9][0-9]*				return LIT_INTEGER;
+[ \t\n]					;
+.					    printf("unexpected character\n");
+
+%%
+
+int yywrap(void)
+{
+    return 1;
+}
