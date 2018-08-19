@@ -1,5 +1,5 @@
-myscanner: LexScanner.c tokens.h lex.yy.c
-	cc LexScanner.c lex.yy.c -ll -o myscanner 
+myscanner: hash.c hash.h tokens.h lex.yy.c
+	cc hash.c lex.yy.c -ll -o myscanner 
 
 lex.yy.c: LexScanner.input
 	lex LexScanner.input

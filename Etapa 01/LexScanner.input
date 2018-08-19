@@ -4,14 +4,49 @@
 
 %%
 
-[a-zA-Z][_a-zA-Z0-9]*	return TK_IDENTIFIER;
-[1-9][0-9]*				return LIT_INTEGER;
-[ \t\n]					;
-.					    printf("unexpected character\n");
+"if"                            { return KW_IF; }
+[0-9]+	                        { printf("[LIT_INT]"); }
+";"	                            { printf("[PEV]"); }
+"="	                            { printf("[IGUAL]"); }
+"+"	                            { printf("[MAIS]"); }
+([-A-Za-z_]|"]")[-A-Za-z_0-9]*	{ printf("[identifier]"); }
+"//".*	
+[ \t\n]	
+.	                            { printf("[ERROR: UNKNOWN]"); }
 
 %%
+int running = 1;
 
-int yywrap(void)
-{
-    return 1;
+int main (int argc, char **argv){
+    
+    int tok;
+
+	if (argc < 2) 
+	{
+		fprintf(stderr, "Call: a.out file_name\n");
+		exit(1);	
+	}
+
+	if ((yyin = fopen(argv[1], "r")) == 0)
+	{
+		fprintf(stderr, "Cannot open file \%s\"\n", argv[1]);
+		exit(2);
+	}	
+
+    while(running){
+        tok = yylex();
+        if(!running)
+            break;
+        switch(tok){
+        case KW_IF: printf("[KW_IF]\n"); break;
+        }
+    }
+	exit(0);
+
 }
+
+int yywrap()
+	{
+    running = 0;
+	return 1;
+	}
