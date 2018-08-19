@@ -1,55 +1,59 @@
-#include <stdio.h>
 #include "hash.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-HASH_NODE*Table[HASH_SIZE];
+HASH_NODE* Table[HASH_SIZE];
 
 void hashInit(void){
     int i;
-    for (i=0; i<HASH_SIZE; i++)
-        Table[i]=0;
+    for(i = 0; i < HASH_SIZE; i++){
+        Table[i] = 0;
+    }
 }
 
 int hashAddress(char *text){
-    int i;
+    int i = 0;
     int address = 1;
-    for (i=0; i<strlen(text); i++)
-        address = (address*text[i])%HASH_SIZE + 1;
-    return address-1;
+    for(i = 0; i < strlen(text); i++){
+        address = (address * text[i]) % HASH_SIZE + 1;
+    }
+    return address - 1;
 }
 
-HASH_NODE* hashInsert(int type, char *text){
-    HASH_NODE *newnode;
+HASH_NODE* hashInsert(int type, char* text) {
     int address;
+    HASH_NODE *newNode;
     address = hashAddress(text);
-
-    if(newnode = hashFind(text))
-        return newnode;
-
-    newnode = (HASH_NODE*) calloc(1,sizeof(HASH_NODE));
-    newnode->type = type;
-    newnode->text = calloc(strlen(text)+1,sizeof(char));
-    strcpy(newnode->text,text);
-    newnode->next = Table[address];
-    Table[address] = newnode;
-    return newnode; 
+    
+    if((newNode = hashFind(text))){
+        return newNode;
+    }
+    newNode = (HASH_NODE*) calloc(1, sizeof(HASH_NODE));
+    newNode->type = type;
+    newNode->text = (char*) calloc(strlen(text)+1, sizeof(char));
+    strcpy(newNode->text, text);
+    newNode->next = Table[address];
+    Table[address] = newNode;
+    return newNode;
 }
-
 HASH_NODE* hashFind(char *text){
-    HASH_NODE *node;
     int address;
+    HASH_NODE*node;
     address = hashAddress(text);
-
-    for (node=Table[i]; node; node = node->next)
-        if (!strcmp(text,node->next))
+    for (node = Table[address]; node ; node = node->next){
+        if(!strcmp(text, node->text)){
             return node;
+        }
+    }
     return 0;
 }
-
-void hashPrint(void){
-    HASH_NODE *node;
-
-    int i;
-    for (i=0; i<HASH_SIZE; i++)
-        for (node=Table[i]; node; node = node->next)
-            fprintf(stderr,"Table[%d] has %s\n",i,node->next);
+void hashPrint(void) {
+    int i= 0;
+    HASH_NODE * node;
+    for(i = 0; i < HASH_SIZE; i++){
+        for(node = Table[i]; node; node = node->next){
+            fprintf(stderr, "Table %d has %s\n", i, node->text);
+        }
+    }
 }

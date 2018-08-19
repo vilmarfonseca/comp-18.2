@@ -1,9 +1,19 @@
-myscanner: hash.c hash.h tokens.h lex.yy.c
-	cc hash.c lex.yy.c -ll -o myscanner 
+scanner: lex.yy.o hash.o
+	gcc lex.yy.o hash.o -o scanner
+
+hash.o: hash.c
+	gcc -c hash.c
+
+lex.yy.o: lex.yy.c
+	gcc -c lex.yy.c
 
 lex.yy.c: LexScanner.input
-	lex LexScanner.input
+	lex --header-file=lex.yy.h LexScanner.input
 
 clean:
-	rm myscanner
-	rm lex.yy.c
+	rm scanner
+	rm lex.yy.c lex.yy.h
+	rm *.o
+
+
+	
