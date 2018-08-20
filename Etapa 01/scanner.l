@@ -1,6 +1,7 @@
 %{
+
+#include "hash.c"
 #include "tokens.h"
-#include "hash.h"
 
 int lineNumber = 1;
 int running = 1;
