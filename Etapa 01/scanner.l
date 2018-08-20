@@ -48,11 +48,12 @@ return							{ return KW_RETURN; }
 [,;:dbqp{}+=*/<>=!&$#]			{ return yytext[0]; }
 
 	/* COMENTÁRIOS, NOVA LINHA E TABULAÇÃO */
-"//".*
+"//".*							{ }
 "/*"							{ BEGIN(COMMENT); }
-<COMMENT>"*/"					{ BEGIN(INITIAL); }
 <COMMENT>"\n"					{ lineNumber++; }
-[ \t]
+<COMMENT>"*/"					{ BEGIN(INITIAL); }
+<COMMENT>.						{ }
+[ \t]							{ }
 "\n"							{ lineNumber++; }	
 .	                        	{ return TOKEN_ERROR; }
 
