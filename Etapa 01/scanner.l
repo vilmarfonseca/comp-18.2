@@ -8,7 +8,7 @@ int running = 1;
 
 int isRunning();
 int getLineNumber();
-int init();
+void initMe();
 
 %}
 
@@ -37,15 +37,14 @@ return							{ return KW_RETURN; }
 >=								{ return OPERATOR_GE; }   
 ==								{ return OPERATOR_EQ; }
 
-	/*LITERAIS E IDENTIFICADORES*/
-([-A-Za-z_]|"]")[-A-Za-z_0-9]*	{ hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
-[0-9]+							{ hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
-\'.\' 							{ hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
-\"([^\"\\\n]|\\.)*\" 			{ hashInsert(LIT_STRING, yytext); return LIT_STRING; }
-[0-9]+\.[0-9]+					{ hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
-	
-	/* CARACTERES ESPECIAIS */
-[,;:dbqp{}+=*/<>=!&$#]			{ return yytext[0]; }
+	/*LITERAIS, ESPECIAIS E IDENTIFICADORES*/
+[0-9]*							{ hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
+\"(\\.|[^"\\])*\"    			{ hashInsert(LIT_STRING, yytext); return LIT_STRING; }
+[-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
+[-ACE-OR-Zace-or-z_0-9]*		{ hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
+\'[-ACE-OR-Zace-or-z]?\'	    { hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
+[0-9]*\.[0-9]*					{ hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
+
 
 	/* COMENTÁRIOS, NOVA LINHA E TABULAÇÃO */
 "//".*							{ }
@@ -70,17 +69,13 @@ int isRunning(){
 	return running;
 }
 
-int init()
-{
+void initMe(){
 	running = 1;
 	lineNumber = 1;
 	hashInit();
-
-	return 0;
 }
 
-int yywrap()
-{
+int yywrap(){
     running = 0;
 	return 1;
 }
