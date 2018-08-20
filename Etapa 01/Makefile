@@ -7,8 +7,8 @@ hash.o: hash.c
 lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
 
-lex.yy.c: LexScanner.input
-	lex --header-file=lex.yy.h LexScanner.input
+lex.yy.c: scanner.l
+	lex --header-file=lex.yy.h scanner.l
 
 clean:
 	rm scanner
