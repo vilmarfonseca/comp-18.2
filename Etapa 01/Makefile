@@ -5,4 +5,4 @@ lex.yy.c: scanner.l
 	lex scanner.l
 
 clean:
-	rm *.o scanner lex.yy.c
+	rm scanner lex.yy.c
