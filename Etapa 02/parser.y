@@ -30,4 +30,52 @@
 %token LIT_FLOAT     
 %token LIT_CHAR      
 %token LIT_STRING    
-%token TOKEN_ERROR   
+%token TOKEN_ERROR 
+
+/* PROGRAM - declaring of functions or variables/globals */
+
+/*VARIABLE: type name '=' init_value*/
+variavel:
+		 type TK_IDENTIFIER '=' literal
+		 ;
+
+array:
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p' : literal_sequence
+	;
+
+
+/*FUNCTION:*/
+function:
+	type TK_IDENTIFIER 'd'argument_list'b' block |
+	type TK_IDENTIFIER 'd' 'b' block
+	;
+
+argument_list:
+	argument |
+	argument ',' argument_list
+	;
+
+argument:
+	type TK_IDENTIFIER
+	;
+
+/*TYPES:*/
+type:
+	KW_CHAR |
+	KW_INT |
+	KW_FLOAT
+	; 
+
+/*LITERALS:*/
+literal:
+	LIT_INTEGER |
+	LIT_FLOAT |
+	LIT_CHAR |
+	LIT_STRING
+	;
+
+literal_sequence:
+	literal |
+	literal literal_sequence
+	;
