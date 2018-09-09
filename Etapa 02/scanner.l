@@ -78,9 +78,3 @@ void initMe(){
 	lineNumber = 1;
 	hashInit();
 }
-
-int yywrap(){
-    running = 0;
-	return 1;
-}
-
