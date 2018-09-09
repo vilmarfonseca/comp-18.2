@@ -1,7 +1,6 @@
 %{
 
-#include "hash.c"
-#include "tokens.h"
+#include "y.tab.c"
 
 int lineNumber = 1;
 int running = 1;
