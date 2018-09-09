@@ -32,17 +32,11 @@
 %token LIT_STRING    
 %token TOKEN_ERROR 
 
+
+%union {HASH_NODE *symbol;}
+
+
 /* PROGRAM - declaring of functions or variables/globals */
-
-/*VARIABLE: type name '=' init_value*/
-variavel:
-		 type TK_IDENTIFIER '=' literal
-		 ;
-
-array:
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p' : literal_sequence
-	;
 
 
 /*FUNCTION:*/
@@ -59,6 +53,104 @@ argument_list:
 argument:
 	type TK_IDENTIFIER
 	;
+
+/*VARIABLE: type name '=' init_value*/
+variavel:
+		 type TK_IDENTIFIER '=' literal
+		 ;
+
+array:
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p' : literal_sequence
+	;
+
+/*COMANDOS*/
+commands:
+	block|
+	attribution|
+	flow_control|
+	read|
+	print|
+	return|
+	/*empty*/
+	;
+
+/*BLOCO DE COMANDOS*/
+block:
+	'{' '}'|
+	'{'command_sequence'}'
+	;
+
+command_sequence:
+	command command_sequence|
+	command
+	;
+
+/*COMMANDS DEFINITION*/
+attribution:
+	TK_IDENTIFIER '=' expression |
+	TK_IDENTIFIER 'q' expression 'p' '=' expression
+	;
+
+flow_control:
+	command_if|
+	command_if_else|
+	command_while
+	;
+
+command_if:
+	KW_IF expression KW_THEN command
+	;
+
+command_if_else:
+	KW_IF expression KW_THEN command KW_ELSE command
+	;
+
+command_while:
+	KW_WHILE expression command
+	;
+
+read:
+	KW_READ TK_IDENTIFIER
+	;
+
+print:
+	KW_PRINT printable_list
+	;
+
+return:
+	KW_RETURN expression
+	;
+
+printable_list:
+	element ',' list_elements |
+	element
+	;
+
+list_elements:
+	LIT_STRING |
+
+/*EXPRESSIONS*/
+expression:
+	TK_IDENTIFIER |
+	TK_IDENTIFIER 'q' expression 'p' |
+	literal |
+	expression OPERATOR_LE expression |  
+ 	expression OPERATOR_GE expression |
+ 	expression OPERATOR_EQ expression |
+ 	expression OPERATOR_OR expression |   
+	expression OPERATOR_AND expression | 
+	expression OPERATOR_NOT expression | 
+	expression '<' expression |
+	expression '+' expression |
+	expression '-' expression |
+	expression '*' expression |
+	expression '/' expression |
+	expression '>' expression |
+	function
+	;
+
+
 
 /*TYPES:*/
 type:
