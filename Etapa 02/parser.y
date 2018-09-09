@@ -15,7 +15,7 @@
 %token KW_IF         
 %token KW_THEN       
 %token KW_ELSE       
-%token KW_WHILE      
+%token KW_WHILE 
 %token KW_READ       
 %token KW_RETURN     
 %token KW_PRINT      
@@ -64,7 +64,7 @@ array:
 	;
 
 /*COMANDOS*/
-commands:
+command:
 	block|
 	attribution|
 	flow_control|
@@ -122,12 +122,14 @@ return:
 	;
 
 printable_list:
-	element ',' list_elements |
-	element
+	expression ',' list_expressions |
+	expression
 	;
 
-list_elements:
-	LIT_STRING |
+list_expressions:
+	expression |
+	/*empty*/
+	;
 
 /*EXPRESSIONS*/
 expression:
