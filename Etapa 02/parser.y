@@ -38,6 +38,22 @@
 
 %%
 
+/*PROGRAM*/
+program:
+	declaration |
+	program declaration
+	;
+
+declaration: 
+	function |
+	global';'
+	;
+
+global: 
+	variable |
+	array
+	;
+
 /*FUNCTION:*/
 function:
 	type TK_IDENTIFIER 'd'argument_list'b' block |
@@ -54,7 +70,7 @@ argument:
 	;
 
 /*VARIABLE: type name '=' init_value*/
-variavel:
+variable:
 		 type TK_IDENTIFIER '=' literal
 		 ;
 
@@ -77,12 +93,12 @@ command:
 /*BLOCO DE COMANDOS*/
 block:
 	'{' '}'|
-	'{'command_sequence'}'
+	'{' command_sequence '}'
 	;
 
 command_sequence:
-	command command_sequence|
-	command
+	command ';' command_sequence |
+	/*empty*/
 	;
 
 /*COMMANDS DEFINITION*/
