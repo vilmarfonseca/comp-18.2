@@ -25,19 +25,18 @@
 %token OPERATOR_OR   
 %token OPERATOR_AND  
 %token OPERATOR_NOT  
-%token TK_IDENTIFIER 
-%token LIT_INTEGER   
-%token LIT_FLOAT     
-%token LIT_CHAR      
-%token LIT_STRING    
+%token <symbol>TK_IDENTIFIER 
+%token <symbol>LIT_INTEGER   
+%token <symbol>LIT_FLOAT     
+%token <symbol>LIT_CHAR      
+%token <symbol>LIT_STRING    
 %token TOKEN_ERROR 
 
 
 %union {HASH_NODE *symbol;}
 
 
-/* PROGRAM - declaring of functions or variables/globals */
-
+%%
 
 /*FUNCTION:*/
 function:
@@ -61,7 +60,7 @@ variavel:
 
 array:
 	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p' : literal_sequence
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p' literal_sequence
 	;
 
 /*COMANDOS*/
@@ -171,3 +170,11 @@ literal_sequence:
 	literal |
 	literal literal_sequence
 	;
+
+%%
+
+int yyerror() 
+{	 
+	fprintf(stderr, "Syntax error at line: %d.\n", getLineNumber());
+	exit(3);
+}

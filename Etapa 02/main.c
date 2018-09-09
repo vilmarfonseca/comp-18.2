@@ -15,8 +15,10 @@ int main (int argc, char **argv){
 		exit(2);
 	}	
 
+	
 	initMe();
 
+	yyparse();
 	printf("\n-----------------------HASH TABLE-----------------------\n");
 	
 	hashPrint();

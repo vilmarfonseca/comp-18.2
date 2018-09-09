@@ -37,12 +37,12 @@ return							{ return KW_RETURN; }
 ==								{ return OPERATOR_EQ; }
 
 	/*LITERAIS, ESPECIAIS E IDENTIFICADORES*/
-[0-9]*							{ hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
-\"(\\.|[^"\\])*\"    			{ hashInsert(LIT_STRING, yytext); return LIT_STRING; }
+[0-9]*							{ yylval.symbol = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
+\"(\\.|[^"\\])*\"    			{ yylval.symbol = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
 [-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
-[-ACE-OR-Zace-or-z_0-9]*		{ hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
-\'[-ACE-OR-Zace-or-z]?\'	    { hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
-[0-9]*\.[0-9]*					{ hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
+[-ACE-OR-Zace-or-z_0-9]*		{ yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
+\'[-ACE-OR-Zace-or-z]?\'	    { yylval.symbol = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
+[0-9]*\.[0-9]*					{ yylval.symbol = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
 
 
 	/* COMENTÁRIOS, NOVA LINHA E TABULAÇÃO */
@@ -63,6 +63,11 @@ int getLineNumber(){
 	return lineNumber;	
 }
 
+int yywrap()
+{
+	running = 0;
+	return 1;
+}
 
 int isRunning(){
 	return running;
