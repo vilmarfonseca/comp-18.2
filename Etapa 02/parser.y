@@ -54,10 +54,9 @@ global:
 	array
 	;
 
-/*FUNCTION:*/
 function:
-	type TK_IDENTIFIER 'd'argument_list'b' block |
-	type TK_IDENTIFIER 'd' 'b' block
+	type TK_IDENTIFIER 'd'argument_list'b' command |
+	type TK_IDENTIFIER 'd' 'b' command
 	;
 
 argument_list:
@@ -69,17 +68,33 @@ argument:
 	type TK_IDENTIFIER
 	;
 
-/*VARIABLE: type name '=' init_value*/
 variable:
-		 type TK_IDENTIFIER '=' literal
-		 ;
+	type TK_IDENTIFIER '=' literal
+	;
 
 array:
 	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
 	type TK_IDENTIFIER 'q'LIT_INTEGER'p' ':' literal_sequence
 	;
 
-/*COMANDOS*/
+type:
+	KW_CHAR |
+	KW_INT |
+	KW_FLOAT
+	; 
+
+literal:
+	LIT_INTEGER |
+	LIT_FLOAT |
+	LIT_CHAR |
+	LIT_STRING
+	;
+
+literal_sequence:
+	literal |
+	literal literal_sequence
+	;
+
 command:
 	block|
 	attribution|
@@ -90,7 +105,6 @@ command:
 	/*empty*/
 	;
 
-/*BLOCO DE COMANDOS*/
 block:
 	'{' '}'|
 	'{' command_sequence '}'
@@ -101,7 +115,6 @@ command_sequence:
 	/*empty*/
 	;
 
-/*COMMANDS DEFINITION*/
 attribution:
 	TK_IDENTIFIER '=' expression |
 	TK_IDENTIFIER 'q' expression 'p' '=' expression
@@ -114,7 +127,7 @@ flow_control:
 	;
 
 command_if:
-	KW_IF expression KW_THEN command|
+	KW_IF expression KW_THEN command 
 	;
 
 command_if_else:
@@ -148,7 +161,6 @@ list_expressions:
 	/*empty*/
 	;
 
-/*EXPRESSIONS*/
 expression:
 	TK_IDENTIFIER |
 	TK_IDENTIFIER 'q' expression 'p' |
@@ -168,29 +180,6 @@ expression:
 	expression '/' expression |
 	expression '>' expression |
 	'd' expression 'b'|
-	function
-	;
-
-
-
-/*TYPES:*/
-type:
-	KW_CHAR |
-	KW_INT |
-	KW_FLOAT
-	; 
-
-/*LITERALS:*/
-literal:
-	LIT_INTEGER |
-	LIT_FLOAT |
-	LIT_CHAR |
-	LIT_STRING
-	;
-
-literal_sequence:
-	literal |
-	literal literal_sequence
 	;
 
 %%

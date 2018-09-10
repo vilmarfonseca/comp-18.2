@@ -18,7 +18,19 @@ int main (int argc, char **argv){
 	
 	initMe();
 
-	yyparse();
+	if (!yyparse()){
+		fprintf(stderr, "\n*********************************************");
+		fprintf(stderr, "\n           This syntax is correct!           \n");
+		fprintf(stderr, "*********************************************\n");
+	}
+		
+	else{
+		fprintf(stderr, "\n*********************************************");
+		fprintf(stderr, "\n           Parsing Error on line: %d         \n", getLineNumber());
+		fprintf(stderr, "*********************************************\n");
+	}
+
+
 	printf("\n-----------------------HASH TABLE-----------------------\n");
 	
 	hashPrint();
