@@ -114,7 +114,7 @@ flow_control:
 	;
 
 command_if:
-	KW_IF expression KW_THEN command
+	KW_IF expression KW_THEN command|
 	;
 
 command_if_else:
@@ -144,6 +144,7 @@ printable_list:
 
 list_expressions:
 	expression |
+	expression ',' list_expressions |
 	/*empty*/
 	;
 
@@ -151,6 +152,8 @@ list_expressions:
 expression:
 	TK_IDENTIFIER |
 	TK_IDENTIFIER 'q' expression 'p' |
+	TK_IDENTIFIER 'd' 'b' |
+	TK_IDENTIFIER 'd'list_expressions'b'|
 	literal |
 	expression OPERATOR_LE expression |  
  	expression OPERATOR_GE expression |
@@ -164,6 +167,7 @@ expression:
 	expression '*' expression |
 	expression '/' expression |
 	expression '>' expression |
+	'd' expression 'b'|
 	function
 	;
 
