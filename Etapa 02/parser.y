@@ -76,7 +76,7 @@ variable:
 
 array:
 	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p' literal_sequence
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p' ':' literal_sequence
 	;
 
 /*COMANDOS*/
