@@ -38,6 +38,6 @@ int main (int argc, char **argv){
 	printf("-----------------------END HASH TABLE-----------------------\n");
 	
 	running = 0;
-	return 1;
+	exit(0);
 
 }

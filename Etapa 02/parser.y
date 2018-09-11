@@ -179,7 +179,7 @@ expression:
 	expression '*' expression |
 	expression '/' expression |
 	expression '>' expression |
-	'd' expression 'b'|
+	'd' expression 'b'
 	;
 
 %%
