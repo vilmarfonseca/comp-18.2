@@ -15,3 +15,8 @@ AST_NODE *initAst(int type, HASH_NODE *symbols_pointer, AST_NODE *son0, AST_NODE
 
 	return new_node;
 }
+
+void printAstNode(AST_NODE *node)
+{
+	
+}
