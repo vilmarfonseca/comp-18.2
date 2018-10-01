@@ -1,11 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "hash.h"
+#include "ast.h"
+#include "lex.yy.h"
+#include "y.tab.h"
+
+extern AST_NODE *root;
 
 int main (int argc, char **argv){
     
-    int tok = 0;
 
-	if (argc < 2) 
+	if (argc < 3) 
 	{
-		fprintf(stderr, "Call: a.out file_name\n");
+		fprintf(stderr, "Call: ./a input_file output_file\n");
 		exit(1);
 	}
 
@@ -16,28 +23,18 @@ int main (int argc, char **argv){
 	}	
 
 	
-	initMe();
+	yyparse();
+	FILE* output = fopen(argv[2], "w");
 
-	if (!yyparse()){
-		fprintf(stderr, "\n*********************************************");
-		fprintf(stderr, "\n           This syntax is correct!           \n");
-		fprintf(stderr, "*********************************************\n");
-	}
-		
-	else{
-		fprintf(stderr, "\n*********************************************");
-		fprintf(stderr, "\n           Parsing Error on line: %d         \n", getLineNumber());
-		fprintf(stderr, "*********************************************\n");
+	if(!output){
+		fprintf(stderr, "Cannot open file \%s\"\n", argv[2]);
+		exit(3);
 	}
 
+	printAst(root, output);
+	fprintf(stderr, "Finished.\n");
+	fclose(output);
 
-	printf("\n-----------------------HASH TABLE-----------------------\n");
-	
-	hashPrint();
-
-	printf("-----------------------END HASH TABLE-----------------------\n");
-	
-	running = 0;
 	exit(0);
 
 }

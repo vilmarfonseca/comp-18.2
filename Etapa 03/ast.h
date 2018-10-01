@@ -1,4 +1,9 @@
+
+#ifndef _ASTH_
+#define _ASTH_
+
 #include <stdio.h>
+#include "hash.h"
 
 //CONSTANTS
 
@@ -35,31 +40,36 @@
 #define AST_EXPRESSION_ARRAY 62
 #define AST_EXPRESSION_LIST 63
 #define AST_EXPRESSION_DB_EMPTY 64
-#define AST_LE 65
-#define AST_GE 66
-#define AST_EQ 67
-#define AST_OR 68
-#define AST_AND 69
-#define AST_NOT 70
-#define AST_LESS 71
-#define AST_ADD 72
-#define AST_SUB 73
-#define AST_MULT 74
-#define AST_DIV 75
-#define AST_GREATER 76
-#define AST_ATTR_SINGLE 77
-#define AST_ATTR_ARRAY 78
+#define AST_EXPRESSION_DB 65
+#define AST_LE 66
+#define AST_GE 67
+#define AST_EQ 68
+#define AST_OR 69
+#define AST_AND 70
+#define AST_NOT 71
+#define AST_LESS 72
+#define AST_ADD 73
+#define AST_SUB 74
+#define AST_MULT 75
+#define AST_DIV 76
+#define AST_GREATER 77
+#define AST_ATTR_SINGLE 78
+#define AST_ATTR_ARRAY 79
 
 
 //NODE
 
 typedef struct ast_node{
 	int type;
-	HASH_NODE *symbols_pointer;
-	ast_node *sons[4];
+	HASH_NODE* symbols_pointer;
+	struct ast_node* sons[4];
 } AST_NODE;
 
+AST_NODE *root;
+FILE *output;
 
 AST_NODE *initAst(int type, HASH_NODE *symbols_pointer, AST_NODE *son0, AST_NODE *son1, AST_NODE *son2, AST_NODE *son3);
 void printAstNode(AST_NODE *node);
-void printAst(AST_NODE *node);
+void printAst(AST_NODE *node, FILE* output);
+
+#endif

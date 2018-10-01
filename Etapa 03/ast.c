@@ -102,9 +102,9 @@ void printAst(AST_NODE *node, FILE* file)
 			printAst(node->sons[0], file);
 			fprintf(file, "%s d", node->symbols_pointer->text);
 			if(node->sons[1])
-				printAst(node>sons[1], file);
+				printAst(node->sons[1], file);
 			fprintf(file, "b");
-			printAst(node>sons[2], file);
+			printAst(node->sons[2], file);
 
 		case AST_ARGUMENT: //type TK_IDENTIFIER
 			printAst(node->sons[0], file);
@@ -183,7 +183,7 @@ void printAst(AST_NODE *node, FILE* file)
 			fprintf(file, "%s d b", node->symbols_pointer->text);
 			break;
 
-		case AST_EXPRESSION_DB // 'd' expression 'b'
+		case AST_EXPRESSION_DB: // 'd' expression 'b'
 			fprintf(file, "d");
 			printAst(node->sons[0], file);
 			fprintf(file, "b");
@@ -259,12 +259,6 @@ void printAst(AST_NODE *node, FILE* file)
 			printAst(node->sons[0], file);
 			fprintf(file, " > ");
 			printAst(node->sons[1], file);
-			break;
-
-		case AST_EXPRESSION_DB:
-			fprintf(file, "d");
-			printAst(node->sons[0], file);
-			fprintf(file, "b");
 			break;
 
 		case AST_ATTR_SINGLE: //TK_IDENTIFIER '=' expression 

@@ -1,5 +1,5 @@
 %{
-    #include "hash.c"
+    #include "hash.h"
     #include "ast.h"
     #include<stdio.h>
     #include<stdlib.h>
@@ -26,17 +26,17 @@
 %token OPERATOR_OR   
 %token OPERATOR_AND  
 %token OPERATOR_NOT  
-%token <symbol>TK_IDENTIFIER 
-%token <symbol>LIT_INTEGER   
-%token <symbol>LIT_FLOAT     
-%token <symbol>LIT_CHAR      
-%token <symbol>LIT_STRING    
+%token <symbols_pointer>TK_IDENTIFIER 
+%token <symbols_pointer>LIT_INTEGER   
+%token <symbols_pointer>LIT_FLOAT     
+%token <symbols_pointer>LIT_CHAR      
+%token <symbols_pointer>LIT_STRING    
 %token TOKEN_ERROR 
 
-%type<ast> program declaration global variable array function argument_list argument variable array type literal literal_sequence command
-%type<ast> block command_sequence attribution flow_control command_if command_if_else command_while read print return list_expresions expression
+%type<ast> program declaration global variable array function argument_list argument type literal literal_sequence command
+%type<ast> block command_sequence attribution flow_control command_if command_if_else command_while read print return list_expressions expression
 
-%union {HASH_NODE *symbol; AST_NODE *ast;}
+%union {HASH_NODE *symbols_pointer; AST_NODE *ast;}
 
 %start program
 %right '='
@@ -72,7 +72,7 @@ global:
 
 function:
 	type TK_IDENTIFIER 'd'argument_list'b' command 	{ $$ = initAst(AST_FUNCTION, $2, $1, $4, $6, 0); }	|
-	type TK_IDENTIFIER 'd' 'b' command  		 	{ $$ = initAst(AST_FUNCTION, $2, $1, $6, 0, 0); }	
+	type TK_IDENTIFIER 'd' 'b' command  		 	{ $$ = initAst(AST_FUNCTION, $2, $1, $5, 0, 0); }	
 	;
 
 argument_list:
@@ -105,6 +105,7 @@ literal:
 	LIT_CHAR 		 	 { $$ = initAst(AST_IDENTIFIER, $1, 0, 0, 0, 0); }	|
 	LIT_STRING 		 	 { $$ = initAst(AST_IDENTIFIER, $1, 0, 0, 0, 0); }	
 	;
+
 
 literal_sequence:
 	literal 			 	  { $$ = initAst(AST_LIT_SEQUENCE, 0, $1, 0, 0, 0); } |
@@ -174,24 +175,24 @@ list_expressions:
 	;
 
 expression:
-	TK_IDENTIFIER 							{ $$ = initAst(AST_EXPRESSION_ID, $1, 0, 0, 0, 0, 0); } |
-	TK_IDENTIFIER 'q' expression 'p' 		{ $$ = initAst(AST_EXPRESSION_FUNCTION, $1, $3, 0, 0, 0, 0); } |
-	TK_IDENTIFIER 'd' 'b' 					{ $$ = initAst(AST_EXPRESSION_DB_EMPTY, $1, 0, 0, 0, 0, 0); } |
-	TK_IDENTIFIER 'd'list_expressions'b'	{ $$ = initAst(AST_EXPRESSION_LIST, $1, $3, 0, 0, 0, 0); } |
+	TK_IDENTIFIER 							{ $$ = initAst(AST_EXPRESSION_ID, $1, 0, 0, 0, 0); } |
+	TK_IDENTIFIER 'q' expression 'p' 		{ $$ = initAst(AST_EXPRESSION_FUNCTION, $1, $3, 0, 0, 0); } |
+	TK_IDENTIFIER 'd' 'b' 					{ $$ = initAst(AST_EXPRESSION_DB_EMPTY, $1, 0, 0, 0, 0); } |
+	TK_IDENTIFIER 'd'list_expressions'b'	{ $$ = initAst(AST_EXPRESSION_LIST, $1, $3, 0, 0, 0); } |
 	literal 								{ $$ = $1; } |
-	expression OPERATOR_LE expression 		{ $$ = initAst(AST_LE, 0, $1, $3, 0, 0, 0); } |  
- 	expression OPERATOR_GE expression 		{ $$ = initAst(AST_GE, 0, $1, $3, 0, 0, 0); } |
- 	expression OPERATOR_EQ expression 		{ $$ = initAst(AST_EQ, 0, $1, $3, 0, 0, 0); } |
- 	expression OPERATOR_OR expression 		{ $$ = initAst(AST_OR, 0, $1, $3, 0, 0, 0); } |   
-	expression OPERATOR_AND expression 		{ $$ = initAst(AST_AND, 0, $1, $3, 0, 0, 0); } | 
-	expression OPERATOR_NOT expression 		{ $$ = initAst(AST_NOT, 0, $1, $3, 0, 0, 0); } | 
-	expression '<' expression 				{ $$ = initAst(AST_LESS, 0, $1, $3, 0, 0, 0); } |
-	expression '+' expression 				{ $$ = initAst(AST_ADD, 0, $1, $3, 0, 0, 0); } |
-	expression '-' expression 				{ $$ = initAst(AST_SUB, 0, $1, $3, 0, 0, 0); } |
-	expression '*' expression 				{ $$ = initAst(AST_MULT, 0, $1, $3, 0, 0, 0); } |
-	expression '/' expression 				{ $$ = initAst(AST_DIV, 0, $1, $3, 0, 0, 0); } |
-	expression '>' expression 				{ $$ = initAst(AST_GREATER, 0, $1, $3, 0, 0, 0); } |
-	'd' expression 'b'						{ $$ = initAst(AST_EXPRESSION_DB, 0, $1, 0, 0, 0, 0); } 
+	expression OPERATOR_LE expression 		{ $$ = initAst(AST_LE, 0, $1, $3, 0, 0); } |  
+ 	expression OPERATOR_GE expression 		{ $$ = initAst(AST_GE, 0, $1, $3, 0, 0); } |
+ 	expression OPERATOR_EQ expression 		{ $$ = initAst(AST_EQ, 0, $1, $3, 0, 0); } |
+ 	expression OPERATOR_OR expression 		{ $$ = initAst(AST_OR, 0, $1, $3, 0, 0); } |   
+	expression OPERATOR_AND expression 		{ $$ = initAst(AST_AND, 0, $1, $3, 0, 0); } | 
+	expression OPERATOR_NOT expression 		{ $$ = initAst(AST_NOT, 0, $1, $3, 0, 0); } | 
+	expression '<' expression 				{ $$ = initAst(AST_LESS, 0, $1, $3, 0, 0); } |
+	expression '+' expression 				{ $$ = initAst(AST_ADD, 0, $1, $3, 0, 0); } |
+	expression '-' expression 				{ $$ = initAst(AST_SUB, 0, $1, $3, 0, 0); } |
+	expression '*' expression 				{ $$ = initAst(AST_MULT, 0, $1, $3, 0, 0); } |
+	expression '/' expression 				{ $$ = initAst(AST_DIV, 0, $1, $3, 0, 0); } |
+	expression '>' expression 				{ $$ = initAst(AST_GREATER, 0, $1, $3, 0, 0); } |
+	'd' expression 'b'						{ $$ = initAst(AST_EXPRESSION_DB, 0, $2, 0, 0, 0); } 
 	;
 
 %%

@@ -1,3 +1,6 @@
+#ifndef _HASHH_
+#define _HASHH_
+
 #define HASH_SIZE 997
 #define SYMBOL_IDENTIFIER 1
 #define SYMBOL_LIT_INTEGER 2
@@ -17,3 +20,5 @@ int hashAddress(char *text);
 HASH_NODE* hashInsert(int type, char *text);
 HASH_NODE* hashFind(char *text);
 void hashPrint(void);
+
+#endif
