@@ -3,7 +3,6 @@
 #define _ASTH_
 
 #include <stdio.h>
-#include "hash.h"
 
 //CONSTANTS
 
