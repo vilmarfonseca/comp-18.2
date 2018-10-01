@@ -1,7 +1,7 @@
 %{
 #include "hash.h"
 #include "ast.h"
-#include "y.tab.c"
+#include "y.tab.h"
 
 
 int lineNumber = 1;
