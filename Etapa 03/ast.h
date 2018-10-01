@@ -35,21 +35,20 @@
 #define AST_EXPRESSION_ARRAY 62
 #define AST_EXPRESSION_LIST 63
 #define AST_EXPRESSION_DB_EMPTY 64
-#define AST_EXPRESSION_DB 65
-#define AST_LE 66
-#define AST_GE 67
-#define AST_EQ 68
-#define AST_OR 69
-#define AST_AND 70
-#define AST_NOT 71
-#define AST_LESS 72
-#define AST_ADD 73
-#define AST_SUB 74
-#define AST_MULT 75
-#define AST_DIV 76
-#define AST_GREATER 77
-#define AST_ATTRIBUTION_SINGLE 78
-#define AST_ATTRIBUTION_ARRAY 79
+#define AST_LE 65
+#define AST_GE 66
+#define AST_EQ 67
+#define AST_OR 68
+#define AST_AND 69
+#define AST_NOT 70
+#define AST_LESS 71
+#define AST_ADD 72
+#define AST_SUB 73
+#define AST_MULT 74
+#define AST_DIV 75
+#define AST_GREATER 76
+#define AST_ATTR_SINGLE 77
+#define AST_ATTR_ARRAY 78
 
 
 //NODE

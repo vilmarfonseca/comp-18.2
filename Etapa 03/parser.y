@@ -1,5 +1,6 @@
 %{
     #include "hash.c"
+    #include "ast.h"
     #include<stdio.h>
     #include<stdlib.h>
 
@@ -32,8 +33,10 @@
 %token <symbol>LIT_STRING    
 %token TOKEN_ERROR 
 
+%type<ast> program declaration global variable array function argument_list argument variable array type literal literal_sequence command
+%type<ast> block command_sequence attribution flow_control command_if command_if_else command_while read print return list_expresions expression
 
-%union {HASH_NODE *symbol;}
+%union {HASH_NODE *symbol; AST_NODE *ast;}
 
 %start program
 %right '='
@@ -45,148 +48,150 @@
 
 %%
 
+
+
+root: program 	{root = $1;}
+	;
+
+
 /*PROGRAM*/
 program:
-	declaration |
-	program declaration
+	declaration 				{ $$ = initAst(AST_PROGRAM, 0, $1, 0, 0, 0); } |
+	program declaration			{ $$ = initAst(AST_PROGRAM, 0, $1, $2, 0, 0); } 
 	;
 
 declaration: 
-	function |
-	global';'
+	function 					{ $$ = $1; }  |
+	global';'					{ $$ = $1; }
 	;
 
 global: 
-	variable |
-	array
+	variable 					{ $$ = $1; }  |
+	array						{ $$ = $1; }
 	;
 
 function:
-	type TK_IDENTIFIER 'd'argument_list'b' command |
-	type TK_IDENTIFIER 'd' 'b' command
+	type TK_IDENTIFIER 'd'argument_list'b' command 	{ $$ = initAst(AST_FUNCTION, $2, $1, $4, $6, 0); }	|
+	type TK_IDENTIFIER 'd' 'b' command  		 	{ $$ = initAst(AST_FUNCTION, $2, $1, $6, 0, 0); }	
 	;
 
 argument_list:
-	argument |
-	argument ',' argument_list
+	argument						{ $$ = initAst(AST_ARG_LIST, 0, $1, 0, 0, 0); }	|
+	argument ',' argument_list		{ $$ = initAst(AST_ARG_LIST, 0, $1, $3, 0, 0); }
 	;
 
 argument:
-	type TK_IDENTIFIER
+	type TK_IDENTIFIER				{ $$ = initAst(AST_ARGUMENT, $2, $1, 0, 0, 0); }
 	;
 
 variable:
-	type TK_IDENTIFIER '=' literal
+	type TK_IDENTIFIER '=' literal  { $$ = initAst(AST_VARIABLE, $2, $1, $4, 0, 0); }
 	;
 
 array:
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p'|
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p' ':' literal_sequence
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p'  		{ $$ = initAst(AST_ARRAY_EMPTY, $2, $1, $4, 0, 0); } |
+	type TK_IDENTIFIER 'q'LIT_INTEGER'p' ':' literal_sequence  { $$ = initAst(AST_ARRAY_INIT, $2, $1, $4, $7, 0); }
 	;
 
 type:
-	KW_CHAR |
-	KW_INT |
-	KW_FLOAT
+	KW_CHAR 			{ $$ = initAst(AST_CHAR, 0, 0, 0, 0, 0); }	|
+	KW_INT 				{ $$ = initAst(AST_INT, 0, 0, 0, 0, 0); }	 |
+	KW_FLOAT 			{ $$ = initAst(AST_FLOAT, 0, 0, 0, 0, 0); }	
 	; 
 
 literal:
-	LIT_INTEGER |
-	LIT_FLOAT |
-	LIT_CHAR |
-	LIT_STRING
+	LIT_INTEGER 		 { $$ = initAst(AST_IDENTIFIER, $1, 0, 0, 0, 0); }	|
+	LIT_FLOAT 		 	 { $$ = initAst(AST_IDENTIFIER, $1, 0, 0, 0, 0); }	|
+	LIT_CHAR 		 	 { $$ = initAst(AST_IDENTIFIER, $1, 0, 0, 0, 0); }	|
+	LIT_STRING 		 	 { $$ = initAst(AST_IDENTIFIER, $1, 0, 0, 0, 0); }	
 	;
 
 literal_sequence:
-	literal |
-	literal literal_sequence
+	literal 			 	  { $$ = initAst(AST_LIT_SEQUENCE, 0, $1, 0, 0, 0); } |
+	literal literal_sequence  { $$ = initAst(AST_LIT_SEQUENCE, 0, $1, $2, 0, 0); }
 	;
 
 command:
-	block|
-	attribution|
-	flow_control|
-	read|
-	print|
-	return|
-	/*empty*/
+	block					  { $$ = initAst(AST_COMMAND, 0, $1, 0, 0, 0); }|
+	attribution				  { $$ = initAst(AST_COMMAND, 0, $1, 0, 0, 0); }|
+	flow_control			  { $$ = initAst(AST_COMMAND, 0, $1, 0, 0, 0); }|
+	read					  { $$ = initAst(AST_COMMAND, 0, $1, 0, 0, 0); }|
+	print					  { $$ = initAst(AST_COMMAND, 0, $1, 0, 0, 0); }|
+	return					  { $$ = initAst(AST_COMMAND, 0, $1, 0, 0, 0); }|
+	/*empty*/				  { $$ = 0; }
 	;
 
 block:
-	'{' '}'|
-	'{' command_sequence '}'
+	'{' '}'					 	 { $$ = 0; }|
+	'{' command_sequence '}'     { $$ = initAst(AST_COMMAND_BLOCK, 0, $2, 0, 0, 0);}
 	;
 
 command_sequence:
-	command ';' command_sequence |
-	/*empty*/
+	command ';' command_sequence	  { $$ = initAst(AST_COMMAND_SEQUENCE, 0, $1, $3, 0, 0); }|
+	/*empty*/						  { $$ = 0; }
 	;
 
 attribution:
-	TK_IDENTIFIER '=' expression |
-	TK_IDENTIFIER 'q' expression 'p' '=' expression
+	TK_IDENTIFIER '=' expression 					{ $$ = initAst(AST_ATTR_SINGLE, $1, $3, 0, 0, 0); }|
+	TK_IDENTIFIER 'q' expression 'p' '=' expression { $$ = initAst(AST_ATTR_ARRAY, $1, $3, $6, 0, 0); }
 	;
 
 flow_control:
-	command_if|
-	command_if_else|
-	command_while
+	command_if 				{ $$ = $1; } |
+	command_if_else 		{ $$ = $1; } |
+	command_while 			{ $$ = $1; } 
 	;
 
 command_if:
-	KW_IF expression KW_THEN command 
+	KW_IF expression KW_THEN command 	{ $$ = initAst(AST_IF, 0, $2, $4, 0, 0); }
 	;
 
 command_if_else:
-	KW_IF expression KW_THEN command KW_ELSE command
+	KW_IF expression KW_THEN command KW_ELSE command  { $$ = initAst(AST_IF_ELSE, 0, $2, $4, $6, 0); }
 	;
 
 command_while:
-	KW_WHILE expression command
+	KW_WHILE expression command 	{ $$ = initAst(AST_WHILE, 0, $2, $3, 0, 0); }
 	;
 
 read:
-	KW_READ TK_IDENTIFIER
+	KW_READ TK_IDENTIFIER			{ $$ = initAst(AST_READ, $2, 0, 0, 0, 0); }
 	;
 
 print:
-	KW_PRINT printable_list
+	KW_PRINT list_expressions 		{ $$ = initAst(AST_PRINT, 0, $2, 0, 0, 0); }
 	;
 
 return:
-	KW_RETURN expression
+	KW_RETURN expression 			{ $$ = initAst(AST_RETURN, 0, $2, 0, 0, 0); }
 	;
 
-printable_list:
-	expression ',' list_expressions |
-	expression
-	;
 
 list_expressions:
-	expression |
-	expression ',' list_expressions |
-	/*empty*/
+	expression 								{ $$ = initAst(AST_EXPRESSION_LIST, 0, $1, 0, 0, 0); } |
+	expression ',' list_expressions 		{ $$ = initAst(AST_EXPRESSION_LIST, 0, $1, $3, 0, 0); }|
+	/*empty*/								{ $$ = 0; }
 	;
 
 expression:
-	TK_IDENTIFIER |
-	TK_IDENTIFIER 'q' expression 'p' |
-	TK_IDENTIFIER 'd' 'b' |
-	TK_IDENTIFIER 'd'list_expressions'b'|
-	literal |
-	expression OPERATOR_LE expression |  
- 	expression OPERATOR_GE expression |
- 	expression OPERATOR_EQ expression |
- 	expression OPERATOR_OR expression |   
-	expression OPERATOR_AND expression | 
-	expression OPERATOR_NOT expression | 
-	expression '<' expression |
-	expression '+' expression |
-	expression '-' expression |
-	expression '*' expression |
-	expression '/' expression |
-	expression '>' expression |
-	'd' expression 'b'
+	TK_IDENTIFIER 							{ $$ = initAst(AST_EXPRESSION_ID, $1, 0, 0, 0, 0, 0); } |
+	TK_IDENTIFIER 'q' expression 'p' 		{ $$ = initAst(AST_EXPRESSION_FUNCTION, $1, $3, 0, 0, 0, 0); } |
+	TK_IDENTIFIER 'd' 'b' 					{ $$ = initAst(AST_EXPRESSION_DB_EMPTY, $1, 0, 0, 0, 0, 0); } |
+	TK_IDENTIFIER 'd'list_expressions'b'	{ $$ = initAst(AST_EXPRESSION_LIST, $1, $3, 0, 0, 0, 0); } |
+	literal 								{ $$ = $1; } |
+	expression OPERATOR_LE expression 		{ $$ = initAst(AST_LE, 0, $1, $3, 0, 0, 0); } |  
+ 	expression OPERATOR_GE expression 		{ $$ = initAst(AST_GE, 0, $1, $3, 0, 0, 0); } |
+ 	expression OPERATOR_EQ expression 		{ $$ = initAst(AST_EQ, 0, $1, $3, 0, 0, 0); } |
+ 	expression OPERATOR_OR expression 		{ $$ = initAst(AST_OR, 0, $1, $3, 0, 0, 0); } |   
+	expression OPERATOR_AND expression 		{ $$ = initAst(AST_AND, 0, $1, $3, 0, 0, 0); } | 
+	expression OPERATOR_NOT expression 		{ $$ = initAst(AST_NOT, 0, $1, $3, 0, 0, 0); } | 
+	expression '<' expression 				{ $$ = initAst(AST_LESS, 0, $1, $3, 0, 0, 0); } |
+	expression '+' expression 				{ $$ = initAst(AST_ADD, 0, $1, $3, 0, 0, 0); } |
+	expression '-' expression 				{ $$ = initAst(AST_SUB, 0, $1, $3, 0, 0, 0); } |
+	expression '*' expression 				{ $$ = initAst(AST_MULT, 0, $1, $3, 0, 0, 0); } |
+	expression '/' expression 				{ $$ = initAst(AST_DIV, 0, $1, $3, 0, 0, 0); } |
+	expression '>' expression 				{ $$ = initAst(AST_GREATER, 0, $1, $3, 0, 0, 0); } |
+	'd' expression 'b'						{ $$ = initAst(AST_EXPRESSION_DB, 0, $1, 0, 0, 0, 0); } 
 	;
 
 %%

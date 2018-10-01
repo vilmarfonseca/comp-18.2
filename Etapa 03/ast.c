@@ -171,16 +171,23 @@ void printAst(AST_NODE *node, FILE* file)
 			fprintf(file, "p");
 			break;
 
-		case AST_EXPRESSION_LIST: //TK_IDENTIFIER 'd'list_expressions'b'
-			fprintf(file, "%s d", node->symbols_pointer->text);
+		case AST_EXPRESSION_LIST: //expression ',' expression
 			printAst(node->sons[0], file);
-			fprintf(file, "b");
+			if(node->sons[1]){
+				fprintf(file, ",");
+				printAst(node->sons[1], file);
+			}
 			break;
 
 		case AST_EXPRESSION_DB_EMPTY: //TK_IDENTIFIER 'd' 'b' 
 			fprintf(file, "%s d b", node->symbols_pointer->text);
 			break;
 
+		case AST_EXPRESSION_DB // 'd' expression 'b'
+			fprintf(file, "d");
+			printAst(node->sons[0], file);
+			fprintf(file, "b");
+			break;			
 
 		case AST_LE:
 			printAst(node->sons[0], file);
@@ -260,12 +267,12 @@ void printAst(AST_NODE *node, FILE* file)
 			fprintf(file, "b");
 			break;
 
-		case AST_ATTRIBUTION_SINGLE: //TK_IDENTIFIER '=' expression 
+		case AST_ATTR_SINGLE: //TK_IDENTIFIER '=' expression 
 			fprintf(file, "%s = ");
 			printAst(node->sons[0], file);
 			break;
 
-		case AST_ATTRIBUTION_ARRAY: //TK_IDENTIFIER 'q' expression 'p' '=' expression
+		case AST_ATTR_ARRAY: //TK_IDENTIFIER 'q' expression 'p' '=' expression
 			fprintf(file, "%s q");
 			printAst(node->sons[0], file);
 			fprintf(file, "p = ");
