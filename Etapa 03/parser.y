@@ -35,6 +35,13 @@
 
 %union {HASH_NODE *symbol;}
 
+%start program
+%right '='
+%left OPERATOR_NOT OPERATOR_AND OPERATOR_OR
+%left OPERATOR_EQ OPERATOR_GE OPERATOR_LE '>' '<'
+%left '+' '-'
+%left '*' '/'
+%right KW_IF KW_THEN KW_ELSE
 
 %%
 
