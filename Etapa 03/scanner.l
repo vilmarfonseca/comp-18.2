@@ -58,8 +58,6 @@ return							{ return KW_RETURN; }
 .	                        	{ return TOKEN_ERROR; }
 
 %%
-#include <stdio.h>
-#include "main.c"
 
 int getLineNumber(){
 	return lineNumber;	
