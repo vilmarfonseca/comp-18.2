@@ -1,7 +1,9 @@
-#include "hash.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "hash.h"
+#include "ast.h"
+#include "y.tab.h"
 
 HASH_NODE* Table[HASH_SIZE];
 
