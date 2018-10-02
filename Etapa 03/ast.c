@@ -19,7 +19,6 @@ AST_NODE *initAst(int type, HASH_NODE *symbol, AST_NODE *son0, AST_NODE *son1, A
 	new_node->sons[2] = son2;
 	new_node->sons[3] = son3;
 
-	printf("%d\n", new_node->type);
 
 	return new_node;
 }
@@ -129,18 +128,17 @@ void printAst(AST_NODE *node, FILE* file)
 			//initAst(AST_FUNCTION, $2, $1, 0, $5, 0); }
 				printAst(node->sons[0], file);
 				if(node->symbol)
-					fprintf(file, "blo %s d ", node->symbol->text);
+					fprintf(file, "%s d ", node->symbol->text);
 				if(node->sons[1])
-					printf("entrou\n");
 					printAst(node->sons[1], file);
 				fprintf(file, " b");
 				printAst(node->sons[2], file);
 				fprintf(file, "\n");
+				break;
 
 			case AST_ARGUMENT: //type TK_IDENTIFIER
-				printf("entrouaqui\n");
 				printAst(node->sons[0], file);
-				fprintf(file, "bla %s d", node->symbol->text);
+				fprintf(file, "%s", node->symbol->text);
 				break;
 
 			case AST_ARG_LIST: //argument | argument ',' argument_list
@@ -159,7 +157,6 @@ void printAst(AST_NODE *node, FILE* file)
 				fprintf(file, "{");
 				fprintf(file, "\n");
 				if(node->sons[0])
-					printf("entrou1\n");
 					printAst(node->sons[0], file);
 				fprintf(file, "}");
 				break;
@@ -175,16 +172,16 @@ void printAst(AST_NODE *node, FILE* file)
 			case AST_IF: //KW_IF expression KW_THEN command 
 				fprintf(file, "if ");
 				printAst(node->sons[0], file);
-				fprintf(file, " then ");
+				fprintf(file, " then\n\t");
 				printAst(node->sons[1], file);
 				break;
 
 			case AST_IF_ELSE: //KW_IF expression KW_THEN command KW_ELSE command
 				fprintf(file, "if ");
 				printAst(node->sons[0], file);
-				fprintf(file, " then ");
+				fprintf(file, " then\n\t");
 				printAst(node->sons[1], file);
-				fprintf(file, " else ");
+				fprintf(file, "\nelse\n\t ");
 				printAst(node->sons[2], file);
 				break;
 
@@ -249,19 +246,19 @@ void printAst(AST_NODE *node, FILE* file)
 
 			case AST_OR:
 				printAst(node->sons[0], file);
-				fprintf(file, " || ");
+				fprintf(file, " or ");
 				printAst(node->sons[1], file);
 				break;
 
 			case AST_AND:
 				printAst(node->sons[0], file);
-				fprintf(file, " && ");
+				fprintf(file, " and ");
 				printAst(node->sons[1], file);
 				break;
 
 			case AST_NOT:
 				printAst(node->sons[0], file);
-				fprintf(file, " ! ");
+				fprintf(file, " not ");
 				printAst(node->sons[1], file);
 				break;
 

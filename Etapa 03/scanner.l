@@ -26,8 +26,8 @@ then							{ return KW_THEN; }
 else							{ return KW_ELSE; }
 while							{ return KW_WHILE; }
 or								{ return OPERATOR_OR; } 
-and 							{ return OPERATOR_AND; }
-not 							{ return OPERATOR_NOT; }
+and	 							{ return OPERATOR_AND; }
+not	 							{ return OPERATOR_NOT; }
 read 							{ return KW_READ; }
 print 							{ return KW_PRINT; }
 return							{ return KW_RETURN; }
