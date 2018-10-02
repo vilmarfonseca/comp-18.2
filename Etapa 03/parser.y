@@ -1,8 +1,8 @@
 %{
-    #include "hash.h"
-    #include "ast.h"
     #include<stdio.h>
     #include<stdlib.h>
+    #include "hash.h"
+    #include "ast.h"
 
     int getLineNumber();
     int yyerror();
@@ -10,35 +10,30 @@
 %}
 
 /*--------TOKENS--------*/
-%token KW_CHAR       
-%token KW_INT        
-%token KW_FLOAT      
-%token KW_IF         
-%token KW_THEN       
-%token KW_ELSE       
-%token KW_WHILE 
-%token KW_READ       
-%token KW_RETURN     
-%token KW_PRINT      
-%token OPERATOR_LE   
-%token OPERATOR_GE   
-%token OPERATOR_EQ   
-%token OPERATOR_OR   
-%token OPERATOR_AND  
-%token OPERATOR_NOT  
-%token <symbols_pointer>TK_IDENTIFIER 
-%token <symbols_pointer>LIT_INTEGER   
-%token <symbols_pointer>LIT_FLOAT     
-%token <symbols_pointer>LIT_CHAR      
-%token <symbols_pointer>LIT_STRING    
-%token TOKEN_ERROR 
+%token KW_CHAR
+%token KW_INT
+%token KW_FLOAT
+%token KW_IF
+%token KW_THEN
+%token KW_ELSE
+%token KW_WHILE
+%token KW_READ
+%token KW_RETURN
+%token KW_PRINT
+%token OPERATOR_LE
+%token OPERATOR_GE
+%token OPERATOR_EQ
+%token OPERATOR_OR
+%token OPERATOR_AND
+%token OPERATOR_NOT
+%token <symbol>TK_IDENTIFIER
+%token <symbol>LIT_INTEGER
+%token <symbol>LIT_FLOAT
+%token <symbol>LIT_CHAR
+%token <symbol>LIT_STRING
+%token TOKEN_ERROR
 
-%type<ast> program declaration global variable array function argument_list argument type literal literal_sequence command
-%type<ast> block command_sequence attribution flow_control command_if command_if_else command_while read print return list_expressions expression
-
-%union {HASH_NODE *symbols_pointer; AST_NODE *ast;}
-
-%start program
+%start root
 %right '='
 %left OPERATOR_NOT OPERATOR_AND OPERATOR_OR
 %left OPERATOR_EQ OPERATOR_GE OPERATOR_LE '>' '<'
@@ -46,12 +41,23 @@
 %left '*' '/'
 %right KW_IF KW_THEN KW_ELSE
 
+%type<ast> program declaration global variable array function argument_list argument type literal literal_sequence command
+%type<ast> block command_sequence attribution flow_control command_if command_if_else command_while read print return list_expressions expression
+
+%union 
+{
+	HASH_NODE *symbol; 
+	AST_NODE *ast;
+}
+
+
+
 %%
 
 
 
-root: program 	{root = $1;}
-	;
+root: 	program 	{ root = $1; }
+		;
 
 
 /*PROGRAM*/
@@ -89,8 +95,8 @@ variable:
 	;
 
 array:
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p'  		{ $$ = initAst(AST_ARRAY_EMPTY, $2, $1, $4, 0, 0); } |
-	type TK_IDENTIFIER 'q'LIT_INTEGER'p' ':' literal_sequence  { $$ = initAst(AST_ARRAY_INIT, $2, $1, $4, $7, 0); }
+	type TK_IDENTIFIER 'q'literal'p'  		{ $$ = initAst(AST_ARRAY_EMPTY, $2, $1, $4, 0, 0); } |
+	type TK_IDENTIFIER 'q'literal'p' ':' literal_sequence  { $$ = initAst(AST_ARRAY_INIT, $2, $1, $4, $7, 0); }
 	;
 
 type:
@@ -108,7 +114,7 @@ literal:
 
 
 literal_sequence:
-	literal 			 	  { $$ = initAst(AST_LIT_SEQUENCE, 0, $1, 0, 0, 0); } |
+	literal 			 	  { $$ = initAst(AST_LIT_ONLY, 0, $1, 0, 0, 0); } |
 	literal literal_sequence  { $$ = initAst(AST_LIT_SEQUENCE, 0, $1, $2, 0, 0); }
 	;
 

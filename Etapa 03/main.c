@@ -20,8 +20,7 @@ int main (int argc, char **argv){
 	{
 		fprintf(stderr, "Cannot open file \%s\"\n", argv[1]);
 		exit(2);
-	}	
-
+	}
 	
 	yyparse();
 	FILE* output = fopen(argv[2], "w");
