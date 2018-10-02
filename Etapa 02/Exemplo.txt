@@ -9,7 +9,7 @@ char c = 'x';
 char x = 65;
 
 int main db
-  {
+{
   a = 7;
   v qap = 90;
   print vqap;
@@ -35,12 +35,12 @@ int main db
   ;;;
   {;};
   {};
-  }
+}
 
 int incn d int x, int n b
-  {
+{
   return x+n;
-  }
+}
 
 
   

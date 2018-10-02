@@ -15,13 +15,27 @@ AST_NODE *initAst(int type, HASH_NODE *symbol, AST_NODE *son0, AST_NODE *son1, A
 	new_node->type = type;
 	new_node->symbol = symbol;
 	new_node->sons[0] = son0;
-	new_node->sons[1] = son0;
-	new_node->sons[2] = son0;
-	new_node->sons[3] = son0;
+	new_node->sons[1] = son1;
+	new_node->sons[2] = son2;
+	new_node->sons[3] = son3;
 
-	//printf("%d\n", type);
+	printf("%d\n", new_node->type);
 
 	return new_node;
+}
+
+void printAstNode(AST_NODE *node){
+	if(node){
+		fprintf(stderr, "%d %s\n", node->type, node->symbol->text);
+		if(node->sons[0])
+			printAstNode(node->sons[0]);
+		if(node->sons[1])
+			printAstNode(node->sons[1]);
+		if(node->sons[2])
+			printAstNode(node->sons[2]);
+		if(node->sons[3])
+			printAstNode(node->sons[3]);
+	}
 }
 
 void printAst(AST_NODE *node, FILE* file)
@@ -75,8 +89,7 @@ void printAst(AST_NODE *node, FILE* file)
 			case AST_VARIABLE: //type TK_IDENTIFIER '=' literal
 				printAst(node->sons[0], file);
 				fprintf(file, "%s", node->symbol->text);
-				printf("%s\n", node->symbol->text);
-				fprintf(file, "=");
+				fprintf(file, " = ");
 				printAst(node->sons[1], file);
 				fprintf(file, ";\n");
 				break;
@@ -84,19 +97,20 @@ void printAst(AST_NODE *node, FILE* file)
 			case AST_ARRAY_EMPTY: //type TK_IDENTIFIER 'q'literal'p' 
 				printAst(node->sons[0], file);
 				fprintf(file, "%s", node->symbol->text);
-				fprintf(file, "q");
+				fprintf(file, " q");
 				printAst(node->sons[1], file);
-				fprintf(file, "p");
+				fprintf(file, "p ");
 				fprintf(file, ";\n");
 				break;
 
 			case AST_ARRAY_INIT: //type TK_IDENTIFIER 'q'literal'p' ':' literal_sequence
 				printAst(node->sons[0], file);
 				fprintf(file, "%s", node->symbol->text);
-				fprintf(file, "q");
+				fprintf(file, " q");
 				printAst(node->sons[1], file);
 				fprintf(file, "p : ");
 				printAst(node->sons[2], file);
+				fprintf(file, ";\n");
 				break;
 
 			case AST_LIT_ONLY:
@@ -106,20 +120,27 @@ void printAst(AST_NODE *node, FILE* file)
 			case AST_LIT_SEQUENCE:
 				printAst(node->sons[0], file);
 				if(node->sons[1])
+					fprintf(file, " ");
 					printAst(node->sons[1], file);
 				break;
 
-			case AST_FUNCTION:
+			case AST_FUNCTION: 	
+			//type TK_IDENTIFIER 'd' 'b' command 
+			//initAst(AST_FUNCTION, $2, $1, 0, $5, 0); }
 				printAst(node->sons[0], file);
-				fprintf(file, "%s d", node->symbol->text);
+				if(node->symbol)
+					fprintf(file, "blo %s d ", node->symbol->text);
 				if(node->sons[1])
+					printf("entrou\n");
 					printAst(node->sons[1], file);
-				fprintf(file, "b");
+				fprintf(file, " b");
 				printAst(node->sons[2], file);
+				fprintf(file, "\n");
 
 			case AST_ARGUMENT: //type TK_IDENTIFIER
+				printf("entrouaqui\n");
 				printAst(node->sons[0], file);
-				fprintf(file, "%s d", node->symbol->text);
+				fprintf(file, "bla %s d", node->symbol->text);
 				break;
 
 			case AST_ARG_LIST: //argument | argument ',' argument_list
@@ -136,15 +157,17 @@ void printAst(AST_NODE *node, FILE* file)
 
 			case AST_COMMAND_BLOCK:
 				fprintf(file, "{");
+				fprintf(file, "\n");
 				if(node->sons[0])
+					printf("entrou1\n");
 					printAst(node->sons[0], file);
 				fprintf(file, "}");
 				break;
 
 			case AST_COMMAND_SEQUENCE:
-				if(node->sons[0]){
-					printAst(node->sons[0], file);
-					fprintf(file, ";");
+				printAst(node->sons[0], file);
+				fprintf(file, ";\n");
+				if(node->sons[1]){
 					printAst(node->sons[1], file);
 				}
 				break;
@@ -152,21 +175,21 @@ void printAst(AST_NODE *node, FILE* file)
 			case AST_IF: //KW_IF expression KW_THEN command 
 				fprintf(file, "if ");
 				printAst(node->sons[0], file);
-				fprintf(file, " then");
+				fprintf(file, " then ");
 				printAst(node->sons[1], file);
 				break;
 
 			case AST_IF_ELSE: //KW_IF expression KW_THEN command KW_ELSE command
 				fprintf(file, "if ");
 				printAst(node->sons[0], file);
-				fprintf(file, " then");
+				fprintf(file, " then ");
 				printAst(node->sons[1], file);
-				fprintf(file, " else");
+				fprintf(file, " else ");
 				printAst(node->sons[2], file);
 				break;
 
 			case AST_WHILE: //KW_WHILE expression command
-				fprintf(file, "while");
+				fprintf(file, "while ");
 				printAst(node->sons[0], file);
 				printAst(node->sons[1], file);
 				break;
@@ -199,6 +222,12 @@ void printAst(AST_NODE *node, FILE* file)
 				printAst(node->sons[0], file);
 				fprintf(file, "b");
 				break;			
+
+			case AST_EXPRESSION_DB_ID: //TK_IDENTIFIER 'd'list_expressions'b'
+				fprintf(file, "%s d", node->symbol->text);
+				printAst(node->sons[0], file);
+				fprintf(file, "b");
+				break;
 
 			case AST_LE:
 				printAst(node->sons[0], file);
@@ -291,6 +320,4 @@ void printAst(AST_NODE *node, FILE* file)
 
 		}
 	}
-	else
-		printf("sem nodo\n");
 }

@@ -30,6 +30,7 @@ int main (int argc, char **argv){
 		exit(3);
 	}
 
+
 	printAst(root, output);
 	fprintf(stderr, "Finished.\n");
 	fclose(output);

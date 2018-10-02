@@ -1,2 +1,4 @@
-int a=int ;
-int a=int ;
+int blo incn d  b{
+return x + n;
+}
+int bla incn d
