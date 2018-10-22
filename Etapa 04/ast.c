@@ -12,8 +12,8 @@ AST_NODE *initAst(int type, int lineNumber, HASH_NODE *symbol, AST_NODE *son0, A
 		exit(1);
 	}
 
-    newNode->dataType = DATATYPE_NOT_DEFINED;
-    newNode->lineNumber = lineNumber;
+    new_node->dataType = DATATYPE_NOT_DEFINED;
+    new_node->lineNumber = lineNumber;
 	new_node->type = type;
 	new_node->symbol = symbol;
 	new_node->sons[0] = son0;

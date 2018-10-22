@@ -51,9 +51,11 @@ void setSymbolType(AST_NODE *node){
     switch(node->type){
         case AST_ARGUMENT:
             node->symbol->type = SYMBOL_SCALAR; break;
-        case AST_VAR:
+        case AST_VARIABLE:
             node->symbol->type = SYMBOL_SCALAR; break;
-        case AST_ARRAY:
+        case AST_ARRAY_INIT:
+            node->symbol->type = SYMBOL_VECTOR; break;
+        case AST_ARRAY_EMPTY:
             node->symbol->type = SYMBOL_VECTOR; break;
         case AST_FUNCTION:
             node->symbol->type = SYMBOL_FUNCTION; break;
@@ -272,7 +274,7 @@ void semanticError(int lineNumber, char message[]){
 }
 int checkSemantic(AST_NODE *node) { //Função que faz a verificação de todos os possíveis erros de sintaxe.
     fprintf(stderr, "\n******* Checking Semantic *******\n");
-    numberOfErrors = 0;
+    numErrors = 0;
     
     checkDeclarations(node);
     checkUndeclaredSymbols();
@@ -287,6 +289,6 @@ void checkOperands(AST_NODE *node){
     
     if (node == 0)
         return;
-    for (i = 0; i<MAX_SONS; i++)
-        checkOperands(node->son[i]);
+    for (i = 0; i<4; i++)
+        checkOperands(node->sons[i]);
 }
