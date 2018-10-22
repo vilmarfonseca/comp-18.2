@@ -23,7 +23,7 @@ int hashAddress(char *text){
     return address - 1;
 }
 
-HASH_NODE* hashInsert(int type, char* text) {
+HASH_NODE* hashInsert(int type, char* text, int dataType, int lineNumber) {
     int address;
     HASH_NODE *newNode;
     address = hashAddress(text);
@@ -34,6 +34,8 @@ HASH_NODE* hashInsert(int type, char* text) {
     newNode = (HASH_NODE*) calloc(1, sizeof(HASH_NODE));
     newNode->type = type;
     newNode->text = (char*) calloc(strlen(text)+1, sizeof(char));
+    newNode->lineNumber = lineNumber;
+    newNode->dataType = dataType;
     strcpy(newNode->text, text);
     newNode->next = Table[address];
     Table[address] = newNode;

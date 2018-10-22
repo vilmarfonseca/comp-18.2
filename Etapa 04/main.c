@@ -24,6 +24,15 @@ int main (int argc, char **argv){
 	}
 	
 	yyparse();
+    
+    int semanticErrors = checkSemantic(root);
+    
+    if(semanticErrors)
+    {
+        fprintf(stderr, "\nNumber of semantic erros: %d!\n\n", semanticErrors);
+        exit(4);
+    }
+    
 	FILE* output = fopen(argv[2], "w");
 
 	if(!output){
