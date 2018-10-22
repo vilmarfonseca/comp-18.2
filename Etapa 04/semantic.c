@@ -12,7 +12,7 @@ void checkDeclarations(AST_NODE *node);
 void checkCorrectUse(AST_NODE *node);
 void checkDataTypes(AST_NODE *node);
 int checkAttributionTypes(int type1, int type2);
-int checkAritmeticOperation(int operator1Type, int operator2Type);
+int checkArithmeticOperation(int operator1Type, int operator2Type);
 void semanticError(int lineNumber, char message[]);
 int checkSemantic(AST_NODE *node);
 void checkOperands(AST_NODE *node);
@@ -189,14 +189,18 @@ void checkCorrectUse(AST_NODE *node){
 
 void checkDataTypes(AST_NODE *node){
     if(!node) { return; }
+    //printf("entrou\n");
+    //printf("%d\n", node->type);
     
-    int s;
+    int s=0;
     for (s = 0; s < 4; s++){
         checkDataTypes(node->sons[s]);
     }
+
     
     switch(node->type) {
-        case AST_LIT_ONLY:
+        case AST_IDENTIFIER:
+            //printf("deu0\n");
             node->dataType = node->symbol->dataType;
             break;
         case AST_GE:
@@ -207,25 +211,31 @@ void checkDataTypes(AST_NODE *node){
         case AST_NOT:
         case AST_LESS:
         case AST_GREATER:
+            //printf("deu1\n");
             node->dataType = DATATYPE_INT;
             break;
         case AST_ADD:
         case AST_SUB:
         case AST_MULT:
-            node->dataType = checkAritmeticOperation(node->sons[0]->dataType, node->sons[1]->dataType);
+            //printf("deu2\n");
+            node->dataType = checkArithmeticOperation(node->sons[0]->dataType, node->sons[1]->dataType);
             break;
         case AST_DIV:
+            //printf("deu3\n");
             node->dataType = DATATYPE_FLOAT;
             break;
         case AST_EXPRESSION_DB:
+            //printf("deu4\n");
             node->dataType = node->sons[0]->dataType;
             break;
         case AST_ATTR_SINGLE:
+            //printf("deu5\n");
             if(!(checkAttributionTypes(node->symbol->dataType, node->sons[0]->dataType))){
                 semanticError(node->lineNumber, "Attribution type conflict.");
             }
             break;
         case AST_ATTR_ARRAY:
+            //printf("deu6\n");
             if(node->sons[0]->dataType != DATATYPE_INT) {
                 semanticError(node->lineNumber, "Vector index access - Expected an integer value.");
             }
@@ -234,11 +244,13 @@ void checkDataTypes(AST_NODE *node){
             }
             break;
         case AST_IF:
+            //printf("deu7\n");
             if(node->sons[0]->dataType != DATATYPE_INT){
                 semanticError(node->sons[0]->lineNumber, "Command IF - Expected a bool value.");
             }
             break;
     }
+
 }
 
 int checkAttributionTypes(int type1, int type2){
@@ -249,7 +261,7 @@ int checkAttributionTypes(int type1, int type2){
     }
 }
 
-int checkAritmeticOperation(int operator1Type, int operator2Type){ //Verifica se os operandos são válidos.
+int checkArithmeticOperation(int operator1Type, int operator2Type){ //Verifica se os operandos são válidos.
     switch(operator1Type){
         case DATATYPE_CHAR:
             if(operator2Type == DATATYPE_CHAR){ return DATATYPE_CHAR; }
@@ -275,7 +287,7 @@ void semanticError(int lineNumber, char message[]){
 int checkSemantic(AST_NODE *node) { //Função que faz a verificação de todos os possíveis erros de sintaxe.
     fprintf(stderr, "\n******* Checking Semantic *******\n");
     numErrors = 0;
-    
+
     checkDeclarations(node);
     checkUndeclaredSymbols();
     checkCorrectUse(node);
