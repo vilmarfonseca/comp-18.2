@@ -62,8 +62,8 @@ root: 	program 	{ root = $1; }
 
 /*PROGRAM*/
 program:
-	declaration 				{ $$ = initAst(AST_PROGRAM, 0, $1, 0, 0, 0); } |
-	program declaration			{ $$ = initAst(AST_PROGRAM, 0, $1, $2, 0, 0); } 
+	declaration 				{ $$ = initAst(AST_PROGRAM, getLineNumber(), NULL, $1, 0, 0, 0); } |
+	program declaration			{ $$ = initAst(AST_PROGRAM, getLineNumber(), NULL, $1, $2, 0, 0); } 
 	;
 
 declaration: 

@@ -3,7 +3,7 @@
 #include "ast.h"
 #include "hash.h"
 
-AST_NODE *initAst(int type, HASH_NODE *symbol, AST_NODE *son0, AST_NODE *son1, AST_NODE *son2, AST_NODE *son3)
+AST_NODE *initAst(int type, int lineNumber, HASH_NODE *symbol, AST_NODE *son0, AST_NODE *son1, AST_NODE *son2, AST_NODE *son3)
 {
 	AST_NODE *new_node;
 
@@ -12,6 +12,8 @@ AST_NODE *initAst(int type, HASH_NODE *symbol, AST_NODE *son0, AST_NODE *son1, A
 		exit(1);
 	}
 
+    newNode->dataType = DATATYPE_NOT_DEFINED;
+    newNode->lineNumber = lineNumber;
 	new_node->type = type;
 	new_node->symbol = symbol;
 	new_node->sons[0] = son0;
