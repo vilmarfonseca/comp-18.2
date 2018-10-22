@@ -221,7 +221,7 @@ void checkDataTypes(AST_NODE *node){
             node->dataType = node->sons[0]->dataType;
             break;
         case AST_ATTR_SINGLE:
-            if(!(verifyAttributionTypes(node->symbol->dataType, node->sons[0]->dataType))){
+            if(!(checkAttributionTypes(node->symbol->dataType, node->sons[0]->dataType))){
                 semanticError(node->lineNumber, "Attribution type conflict.");
             }
             break;
@@ -229,7 +229,7 @@ void checkDataTypes(AST_NODE *node){
             if(node->sons[0]->dataType != DATATYPE_INT) {
                 semanticError(node->lineNumber, "Vector index access - Expected an integer value.");
             }
-            if(!(verifyAttributionTypes(node->symbol->dataType, node->sons[1]->dataType))){
+            if(!(checkAttributionTypes(node->symbol->dataType, node->sons[1]->dataType))){
                 semanticError(node->lineNumber, "Attribution type conflict.");
             }
             break;
