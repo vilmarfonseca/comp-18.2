@@ -166,15 +166,15 @@ void checkCorrectUse(AST_NODE *node){
     if(!node) { return; }
     
     switch(node->type) {
-        case AST_VARIABLE: // var declaration
+        case AST_VARIABLE:
             if(node->symbol->type != SYMBOL_SCALAR)
                 semanticError(node->lineNumber, "Incorrect use.");
             break;
-        case AST_ATTR_SINGLE: // simple attribution
+        case AST_ATTR_SINGLE:
             if(node->symbol->type != SYMBOL_SCALAR)
                 semanticError(node->lineNumber, "Incorrect use.");
             break;
-        case AST_ATTR_ARRAY: //vector attribution
+        case AST_ATTR_ARRAY:
             if(node->symbol->type != SYMBOL_VECTOR)
                 semanticError(node->lineNumber, "Incorrect use.");
             break;

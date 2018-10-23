@@ -7,8 +7,6 @@
     int getLineNumber();
     int yyerror();
     int yylex();
-    
-    //Número de linha dentro da função?
 %}
 
 /*--------TOKENS--------*/

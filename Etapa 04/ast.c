@@ -21,8 +21,6 @@ AST_NODE *initAst(int type, int lineNumber, HASH_NODE *symbol, AST_NODE *son0, A
 	new_node->sons[2] = son2;
 	new_node->sons[3] = son3;
 
-
-
 	return new_node;
 }
 
