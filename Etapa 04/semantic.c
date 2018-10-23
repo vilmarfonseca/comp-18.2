@@ -15,7 +15,6 @@ int checkAttributionTypes(int type1, int type2);
 int checkArithmeticOperation(int operator1Type, int operator2Type);
 void semanticError(int lineNumber, char message[]);
 int checkSemantic(AST_NODE *node);
-void checkOperands(AST_NODE *node);
 
 //Declarations
 int functionsCount = 0;
@@ -294,13 +293,4 @@ int checkSemantic(AST_NODE *node) { //Função que faz a verificação de todos 
     checkDataTypes(node);
     
     return numErrors;
-}
-
-void checkOperands(AST_NODE *node){
-    int  i;
-    
-    if (node == 0)
-        return;
-    for (i = 0; i<4; i++)
-        checkOperands(node->sons[i]);
 }
