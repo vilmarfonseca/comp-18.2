@@ -74,7 +74,7 @@ AST_NODE *root;
 FILE *output;
 
 AST_NODE *initAst(int type, int lineNumber, HASH_NODE *symbol, AST_NODE *son0, AST_NODE *son1, AST_NODE *son2, AST_NODE *son3);
-void printAstNode(AST_NODE *node);
+void printAstNode(AST_NODE *node, int level);
 void printAst(AST_NODE *node, FILE* output);
 
 #endif

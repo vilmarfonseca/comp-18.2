@@ -24,17 +24,23 @@ AST_NODE *initAst(int type, int lineNumber, HASH_NODE *symbol, AST_NODE *son0, A
 	return new_node;
 }
 
-void printAstNode(AST_NODE *node){
+void printAstNode(AST_NODE *node, int level){
+    int i;
+    for(i=0; i<level; i++)
+        fprintf(stderr, "   ");
 	if(node){
-		fprintf(stderr, "%d %s\n", node->type, node->symbol->text);
+        if(node->symbol != 0)
+            fprintf(stderr, "%d %s\n", node->type, node->symbol->text);
+        else
+            fprintf(stderr, "%d <no symbol>\n", node->type);
 		if(node->sons[0])
-			printAstNode(node->sons[0]);
+			printAstNode(node->sons[0], level+1);
 		if(node->sons[1])
-			printAstNode(node->sons[1]);
+			printAstNode(node->sons[1], level+1);
 		if(node->sons[2])
-			printAstNode(node->sons[2]);
+			printAstNode(node->sons[2], level+1);
 		if(node->sons[3])
-			printAstNode(node->sons[3]);
+			printAstNode(node->sons[3], level+1);
 	}
 }
 
