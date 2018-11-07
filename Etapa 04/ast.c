@@ -29,10 +29,56 @@ void printAstNode(AST_NODE *node, int level){
     for(i=0; i<level; i++)
         fprintf(stderr, "   ");
 	if(node){
+        switch (node->type) {
+            case AST_PROGRAM: fprintf(stderr, "AST_PROGRAM - %d, ", node->type);break;
+            case AST_IDENTIFIER: fprintf(stderr, "AST_IDENTIFIER - %d, ", node->type);break;
+            case AST_VARIABLE: fprintf(stderr, "AST_VARIABLE - %d, ", node->type);break;
+            case AST_ARRAY_EMPTY: fprintf(stderr, "AST_ARRAY_EMPTY - %d, ", node->type);break;
+            case AST_ARRAY_INIT: fprintf(stderr, "AST_ARRAY_INIT - %d, ", node->type);break;
+            case AST_FUNCTION: fprintf(stderr, "AST_FUNCTION - %d, ", node->type);break;
+            case AST_ARG_LIST: fprintf(stderr, "AST_ARG_LIST - %d, ", node->type);break;
+            case AST_ARGUMENT: fprintf(stderr, "AST_ARGUMENT - %d, ", node->type);break;
+            case AST_CHAR: fprintf(stderr, "AST_CHAR - %d, ", node->type);break;
+            case AST_INT: fprintf(stderr, "AST_INT - %d, ", node->type);break;
+            case AST_FLOAT: fprintf(stderr, "AST_FLOAT - %d, ", node->type);break;
+            case AST_LIT_ONLY: fprintf(stderr, "AST_LIT_ONLY - %d, ", node->type);break;
+            case AST_LIT_SEQUENCE: fprintf(stderr, "AST_LIT_SEQUENCE - %d, ", node->type);break;
+            case AST_COMMAND: fprintf(stderr, "AST_COMMAND - %d, ", node->type);break;
+            case AST_COMMAND_BLOCK: fprintf(stderr, "AST_COMMAND_BLOCK - %d, ", node->type);break;
+            case AST_COMMAND_SEQUENCE: fprintf(stderr, "AST_COMMAND_SEQUENCE - %d, ", node->type);break;
+            case AST_IF: fprintf(stderr, "AST_IF - %d, ", node->type);break;
+            case AST_IF_ELSE: fprintf(stderr, "AST_IF_ELSE - %d, ", node->type);break;
+            case AST_WHILE: fprintf(stderr, "AST_WHILE - %d, ", node->type);break;
+            case AST_READ: fprintf(stderr, "AST_READ - %d, ", node->type);break;
+            case AST_PRINT: fprintf(stderr, "AST_PRINT - %d, ", node->type);break;
+            case AST_RETURN: fprintf(stderr, "AST_RETURN - %d, ", node->type);break;
+            case AST_EXPRESSION_DB_ID: fprintf(stderr, "AST_EXPRESSION_DB_ID - %d, ", node->type);break;
+            case AST_EXPRESSION_ID: fprintf(stderr, "AST_EXPRESSION_ID - %d, ", node->type);break;
+            case AST_EXPRESSION_FUNCTION: fprintf(stderr, "AST_EXPRESSION_FUNCTION - %d, ", node->type);break;
+            case AST_EXPRESSION_ARRAY: fprintf(stderr, "AST_EXPRESSION_ARRAY - %d, ", node->type);break;
+            case AST_EXPRESSION_LIST: fprintf(stderr, "AST_EXPRESSION_LIST - %d, ", node->type);break;
+            case AST_EXPRESSION_DB_EMPTY: fprintf(stderr, "AST_EXPRESSION_DB_EMPTY - %d, ", node->type);break;
+            case AST_EXPRESSION_DB: fprintf(stderr, "AST_EXPRESSION_DB - %d, ", node->type);break;
+            case AST_LE: fprintf(stderr, "AST_LE - %d, ", node->type);break;
+            case AST_GE: fprintf(stderr, "AST_GE - %d, ", node->type);break;
+            case AST_EQ: fprintf(stderr, "AST_EQ - %d, ", node->type);break;
+            case AST_OR: fprintf(stderr, "AST_OR - %d, ", node->type);break;
+            case AST_AND: fprintf(stderr, "AST_AND - %d, ", node->type);break;
+            case AST_NOT: fprintf(stderr, "AST_NOT - %d, ", node->type);break;
+            case AST_LESS: fprintf(stderr, "AST_LESS - %d, ", node->type);break;
+            case AST_ADD: fprintf(stderr, "AST_ADD - %d, ", node->type);break;
+            case AST_SUB: fprintf(stderr, "AST_SUB - %d, ", node->type);break;
+            case AST_MULT: fprintf(stderr, "AST_MULT - %d, ", node->type);break;
+            case AST_DIV: fprintf(stderr, "AST_DIV - %d, ", node->type);break;
+            case AST_GREATER: fprintf(stderr, "AST_GREATER - %d, ", node->type);break;
+            case AST_ATTR_SINGLE: fprintf(stderr, "AST_ATTR_SINGLE - %d, ", node->type);break;
+            case AST_ATTR_ARRAY: fprintf(stderr, "AST_ATTR_ARRAY - %d, ", node->type);break;
+            default: fprintf(stderr,"AST_UNKNOWN "); break;
+        }
         if(node->symbol != 0)
-            fprintf(stderr, "%d %s\n", node->type, node->symbol->text);
+            fprintf(stderr, "%s, \n", node->symbol->text);
         else
-            fprintf(stderr, "%d <no symbol>\n", node->type);
+            fprintf(stderr, "<no symbol>, \n");
 		if(node->sons[0])
 			printAstNode(node->sons[0], level+1);
 		if(node->sons[1])
