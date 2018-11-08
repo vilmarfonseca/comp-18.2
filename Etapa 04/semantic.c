@@ -235,7 +235,7 @@ void checkDataTypes(AST_NODE *node){
             break;
         case AST_ATTR_ARRAY:
             //printf("deu6\n");
-            if(node->sons[0]->dataType != DATATYPE_INT) {
+            if(node->sons[0]->symbol->dataType != DATATYPE_INT) {
                 semanticError(node->lineNumber, "Vector index access - Expected an integer value.");
             }
             if(!(checkAttributionTypes(node->symbol->dataType, node->sons[1]->dataType))){
