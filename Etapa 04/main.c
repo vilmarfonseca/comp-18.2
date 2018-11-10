@@ -26,7 +26,9 @@ int main (int argc, char **argv){
 	yyparse();
     
     int semanticErrors = checkSemantic(root);
-    printAstNode(root, 0);
+    
+    //printAstNode(root, 0); DEBUG TREE
+    
     if(semanticErrors)
     {
         fprintf(stderr, "\nNumber of semantic erros: %d!\n\n", semanticErrors);
