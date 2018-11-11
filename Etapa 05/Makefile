@@ -1,5 +1,5 @@
 etapa5: y.tab.o lex.yy.o hash.o ast.o semantic.o main.o
-	gcc lex.yy.o hash.o ast.o semantic.o main.o y.tab.o -o etapa5 -Wall
+	gcc lex.yy.o hash.o ast.o semantic.o main.o y.tab.o tac.o -o etapa5 -Wall
 
 main.o: main.c
 	gcc -c main.c -Wall
@@ -24,6 +24,9 @@ lex.yy.c: scanner.l
 
 ast.o: ast.c
 	gcc -c ast.c -Wall
+
+tac.o: tac.c
+    gcc -c tac.c
 
 clean:
 	rm *.o etapa5 lex.yy.c lex.yy.h y.tab.c y.tab.h
