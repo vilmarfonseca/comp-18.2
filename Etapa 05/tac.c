@@ -87,12 +87,12 @@ TAC *tacGenerate(AST_NODE *node)
     switch(node->type)
     {
             
-        case AST_IDENTIFIER:    result = tacCreate(AST_SYMBOL, node->symbol, 0, 0); break;
+        case AST_IDENTIFIER:    result = tacCreate(AST_IDENTIFIER, node->symbol, 0, 0); break;
             
             /* GLOBAIS */
         case AST_VARIABLE:   result = makeVariavel(node->symbol, code);  break;
             
-        case AST_ARRAY_NAO_DECLARADO:   result = makeArray(node->symbol, code); break;
+        case AST_ARRAY_EMPTY:   result = makeArray(node->symbol, code); break;
         case AST_LIT_SEQUENCE:  result = makeArrayInicializado(node->sons[0]->symbol, code);    break;
             
             /* FUNÇÕES */
@@ -115,7 +115,7 @@ TAC *tacGenerate(AST_NODE *node)
         case AST_LE:    result = makeOperacaoBinaria(TAC_LE,  code);    break;
         case AST_GE:    result = makeOperacaoBinaria(TAC_GE,  code);    break;
         case AST_EQ:    result = makeOperacaoBinaria(TAC_EQ,  code);    break;
-        case AST_NOT:   result = makeOperacaoBinaria(TAC_NEG, code);    break;
+        case AST_NOT:   result = makeOperacaoBinaria(TAC_NOT, code);    break;
         case AST_LESS:  result = makeOperacaoBinaria(TAC_LESS, code);   break;
             
             /* ATRIBUIÇÃO */
