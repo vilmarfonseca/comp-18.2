@@ -5,6 +5,7 @@
 #include "semantic.h"
 #include "lex.yy.h"
 #include "y.tab.h"
+#include "tac.h"
 
 extern AST_NODE *root;
 
@@ -44,7 +45,9 @@ int main (int argc, char **argv){
 
 
 	printAst(root, output);
-	fprintf(stderr, "Finished.\n");
+	fprintf(stderr, "Success generating code.\n");
+    TAC *tac = tacGenerate(root);
+    tacPrintNext(tacReverse(tac));
 	fclose(output);
 
 	exit(0);

@@ -12,15 +12,15 @@
 
 TAC *tacCreate(int type, HASH_NODE *res, HASH_NODE *op1, HASH_NODE *op2)
 {
-    TAC *novo;
-    novo = (TAC *) calloc(1, sizeof(TAC));
-    novo->type = type;
-    novo->res = res;
-    novo->op1 = op1;
-    novo->op2 = op2;
-    novo->prev = 0;
-    novo->next = 0;
-    return novo;
+    TAC *new;
+    new = (TAC *) calloc(1, sizeof(TAC));
+    new->type = type;
+    new->res = res;
+    new->op1 = op1;
+    new->op2 = op2;
+    new->prev = 0;
+    new->next = 0;
+    return new;
 }
 
 void tacPrintPrev(TAC* node)
@@ -282,10 +282,10 @@ TAC* makeWhenThen(TAC** code)
 {
     TAC* expression;
     TAC* thenCmd;
-    HASH_NODE *novoLabel;
-    novoLabel = makeLabel();
-    expression = tacCreate(TAC_IFZ, novoLabel, code[0] ? code[0]->res : 0, 0);
-    thenCmd = tacCreate(TAC_LABEL, novoLabel, 0, 0);
+    HASH_NODE *newLabel;
+    newLabel = makeLabel();
+    expression = tacCreate(TAC_IFZ, newLabel, code[0] ? code[0]->res : 0, 0);
+    thenCmd = tacCreate(TAC_LABEL, newLabel, 0, 0);
     return tacJoin(tacJoin(tacJoin(code[0], expression), code[1]), thenCmd);
 }
 

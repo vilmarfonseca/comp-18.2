@@ -17,5 +17,7 @@ void checkDeclarations(AST_NODE *node);
 void checkCorrectUse(AST_NODE *node);
 void checkDataTypes(AST_NODE *node);
 void checkUndeclaredSymbols();
+AST_NODE* findFuncDeclaration(AST_NODE *funcall_node);
+
 
 #endif /* semantic_h */

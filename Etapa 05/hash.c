@@ -61,3 +61,26 @@ void hashPrint(void) {
         }
     }
 }
+
+HASH_NODE *makeTemp(void)
+{
+    static int serialNumber = 0;
+    static char buffer[128];
+    sprintf(buffer, "_temp_%d", serialNumber++);
+    return hashInsert(SYMBOL_LITINT, buffer, 0, 0);
+}
+
+HASH_NODE *makeLabel(void)
+{
+    static int serialNumber = 0;
+    static char buffer[128];
+    sprintf(buffer, "_label_%d", serialNumber++);
+    return hashInsert(SYMBOL_LABEL, buffer, 0, 0);
+}
+
+HASH_NODE *makeLabelArray(HASH_NODE *node)
+{
+    static char buffer[256];
+    sprintf(buffer, "_arrayLabel_%s", node->text);
+    return hashInsert(SYMBOL_LABEL, buffer, 0, 0);
+}
