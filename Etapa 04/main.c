@@ -27,7 +27,7 @@ int main (int argc, char **argv){
     
     int semanticErrors = checkSemantic(root);
     
-    //printAstNode(root, 0); DEBUG TREE
+    printAstNode(root, 0); //DEBUG TREE
     
     if(semanticErrors)
     {

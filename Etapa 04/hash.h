@@ -14,6 +14,7 @@
 #define DATATYPE_CHAR 2
 #define DATATYPE_FLOAT 3
 #define DATATYPE_NOT_DEFINED 4
+#define DATATYPE_FUNCTION 5
 
 typedef struct hash_node
 {

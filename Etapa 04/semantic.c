@@ -58,6 +58,10 @@ void setSymbolType(AST_NODE *node){
             node->symbol->type = SYMBOL_VECTOR; break;
         case AST_FUNCTION:
             node->symbol->type = SYMBOL_FUNCTION; break;
+        case AST_EXPRESSION_DB:
+            node->symbol->type = SYMBOL_FUNCTION; break;
+        case AST_EXPRESSION_DB_ID:
+            node->symbol->type = SYMBOL_FUNCTION; break;
         default:
             node->symbol->type = SYMBOL_NOT_DEFINED; break;
     }
@@ -72,6 +76,8 @@ void setDataType(AST_NODE *node){
             node->symbol->dataType = DATATYPE_FLOAT; break;
         case AST_CHAR:
             node->symbol->dataType = DATATYPE_CHAR; break;
+        case AST_EXPRESSION_DB_ID:
+            node->symbol->dataType = DATATYPE_FUNCTION; break;
         default:
             node->symbol->dataType = DATATYPE_NOT_DEFINED; break;
     }
@@ -223,13 +229,14 @@ void checkDataTypes(AST_NODE *node){
             //printf("deu3\n");
             node->dataType = DATATYPE_FLOAT;
             break;
-        case AST_EXPRESSION_DB:
+        /*case AST_EXPRESSION_DB:
             //printf("deu4\n");
             node->dataType = node->sons[0]->dataType;
-            break;
+            break;*/
         case AST_ATTR_SINGLE:
             //printf("deu5\n");
             if(!(checkAttributionTypes(node->symbol->dataType, node->sons[0]->dataType))){
+                fprintf(stderr, "ERRO 1: %d %d\n", node->symbol->dataType, node->sons[0]->dataType);
                 semanticError(node->lineNumber, "Attribution type conflict.");
             }
             break;
@@ -247,6 +254,11 @@ void checkDataTypes(AST_NODE *node){
             if(node->sons[0]->dataType != DATATYPE_INT){
                 semanticError(node->sons[0]->lineNumber, "Command IF - Expected a bool value.");
             }
+            break;
+        case AST_FUNCTION:
+        case AST_EXPRESSION_DB_ID:
+        case AST_EXPRESSION_DB:
+            node->dataType = DATATYPE_FUNCTION;
             break;
     }
 
