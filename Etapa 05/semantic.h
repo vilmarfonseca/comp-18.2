@@ -20,4 +20,4 @@ void checkUndeclaredSymbols();
 AST_NODE* findFuncDeclaration(AST_NODE *funcall_node);
 
 
-#endif /* semantic_h */
+#endif

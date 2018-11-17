@@ -16,7 +16,6 @@ int checkArithmeticOperation(int operator1Type, int operator2Type);
 void semanticError(int lineNumber, char message[]);
 int checkSemantic(AST_NODE *node);
 
-//Declarations
 int functionsCount = 0;
 int numErrors;
 LIST_FUNC_DECL* listFuncDecl = 0; //Inicializa Struct

@@ -74,11 +74,11 @@ TAC *tacGenerate(AST_NODE *node){
     switch(node->type){
             
         case AST_IDENTIFIER:        result = tacCreate(AST_IDENTIFIER, node->symbol, 0, 0); break;
-        case AST_VARIABLE:          result = makeVariavel(node->symbol, code);  break;  
+        case AST_VARIABLE:          result = makeVar(node->symbol, code);  break;
         case AST_ARRAY_EMPTY:       result = makeArray(node->symbol, code); break;
-        case AST_LIT_SEQUENCE:      result = makeArrayInicializado(node->sons[0]->symbol, code);    break;
+        case AST_LIT_SEQUENCE:      result = makeArrayInit(node->sons[0]->symbol, code);    break;
         case AST_RETURN:            result = makeReturn(code);  break;
-        case AST_FUNCTION:          result = makeFnDef(node->symbol, code); break;
+        case AST_FUNCTION:          result = makeFunctionDefinition(node->symbol, code); break;
         case AST_READ:              result = makeRead(node->symbol);    break;
         case AST_PRINT:             result = makePrint(code);   break;
         case AST_ADD:               result = makeOperacaoBinaria(TAC_ADD, code);    break;
@@ -93,7 +93,10 @@ TAC *tacGenerate(AST_NODE *node){
         case AST_NOT:               result = makeOperacaoBinaria(TAC_NOT, code);    break;
         case AST_LESS:              result = makeOperacaoBinaria(TAC_LESS, code);   break;
         case AST_ATTR_SINGLE:       result = makeAtribuicao(node->symbol, code);    break;
-        case AST_ATTR_ARRAY:        result = makeAtribuicaoArray(node->symbol, code);   break;     
+        case AST_ATTR_ARRAY:        result = makeAtribuicaoArray(node->symbol, code);   break;
+        case AST_WHILE:             result = makeWhile(code); break;
+        case AST_IF:                result = makeIfThen(code);    break;
+        case AST_IF_ELSE:           result = makeIfThenElse(code);    break;
         default:                    result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]) , code[3]);
     }
     
@@ -228,8 +231,9 @@ TAC* makeAtribuicaoArray(HASH_NODE* res, TAC **code){
 }
 
 TAC* makeOperacaoBinaria(int operation, TAC** code){
-    return tacJoin(code[0], tacJoin(code[1], tacCreate( operation, makeTemp(), code[0]->res ? code[0]->res : 0, code[1]->res ? code[1]->res : 0 )));
+    return tacJoin(code[0], tacJoin(code[1], tacCreate( operation, makeTemp(), code[0] ? code[0]->res : 0, code[1] ? code[1]->res : 0 )));
 }
+
 
 TAC* makeAtribuicao(HASH_NODE* res, TAC **code){
     TAC *newTac = tacCreate(TAC_ATRIBUICAO, res, code[0] ? code[0]->res : 0, 0);
@@ -268,7 +272,7 @@ TAC* makeIfThenElse(TAC** code){
     return tacJoin(expression,tacJoin(tacIfz,tacJoin(thenCmd,tacJoin(tacJump,tacJoin(tacLabelThenCmd,tacJoin(elseCmd,tacLabelElseCmd))))));
 }
 
-TAC* makeFnCall(AST_NODE *functionCall){
+TAC* makeFunctionCall(AST_NODE *functionCall){
     AST_NODE *functionDefinition = findFuncDeclaration(functionCall);
     AST_NODE *expressoes = functionCall->sons[0];
     AST_NODE *args = functionDefinition->sons[1];
@@ -279,7 +283,7 @@ TAC* makeFnCall(AST_NODE *functionCall){
     return tacJoin(tacArgs, tacCall);
 }
 
-TAC* makeFnDef(HASH_NODE *identifier, TAC** code){
+TAC* makeFunctionDefinition(HASH_NODE *identifier, TAC** code){
     TAC *fnBody = code[2];
     TAC *fbBegin = tacCreate(TAC_BEGIN_FUNCTION, identifier, 0, 0);
     TAC *fbEnd = tacCreate(TAC_END_FUNCTION, identifier, 0, 0);
@@ -306,12 +310,12 @@ TAC *makeArguments(AST_NODE *args, AST_NODE *expressoes){
     return tacListOfArgs;
 }
 
-TAC* makeVariavel(HASH_NODE* res, TAC **code){
+TAC* makeVar(HASH_NODE* res, TAC **code){
     TAC *newTac = tacCreate(TAC_VAR, res, code[1] ? code[1]->res : 0, 0);
     return tacJoin(code[1], newTac);
 }
 
-TAC* makeArrayInicializado(HASH_NODE* res, TAC **code){
+TAC* makeArrayInit(HASH_NODE* res, TAC **code){
     TAC *newTac = tacCreate(TAC_ARRAY_DECLARADO, res, 0, 0);
     return tacJoin(newTac, code[1]);
 }
