@@ -16,7 +16,6 @@ int checkArithmeticOperation(int operator1Type, int operator2Type);
 void semanticError(int lineNumber, char message[]);
 int checkSemantic(AST_NODE *node);
 
-//Declarations
 int functionsCount = 0;
 int numErrors;
 LIST_FUNC_DECL* listFuncDecl = 0; //Inicializa Struct
@@ -229,14 +228,13 @@ void checkDataTypes(AST_NODE *node){
             //printf("deu3\n");
             node->dataType = DATATYPE_FLOAT;
             break;
-        /*case AST_EXPRESSION_DB:
+        case AST_EXPRESSION_DB:
             //printf("deu4\n");
             node->dataType = node->sons[0]->dataType;
-            break;*/
+            break;
         case AST_ATTR_SINGLE:
             //printf("deu5\n");
             if(!(checkAttributionTypes(node->symbol->dataType, node->sons[0]->dataType))){
-                fprintf(stderr, "ERRO 1: %d %d\n", node->symbol->dataType, node->sons[0]->dataType);
                 semanticError(node->lineNumber, "Attribution type conflict.");
             }
             break;
@@ -254,11 +252,6 @@ void checkDataTypes(AST_NODE *node){
             if((node->sons[0]->dataType != DATATYPE_BOOL)&&(node->sons[0]->dataType != DATATYPE_FUNCTION)){
                 semanticError(node->sons[0]->lineNumber, "Command IF - Expected a bool value.");
             }
-            break;
-        case AST_FUNCTION:
-        case AST_EXPRESSION_DB_ID:
-        case AST_EXPRESSION_DB:
-            node->dataType = DATATYPE_FUNCTION;
             break;
     }
 

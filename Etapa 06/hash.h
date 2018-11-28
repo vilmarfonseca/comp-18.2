@@ -9,6 +9,7 @@
 #define SYMBOL_VECTOR 4
 #define SYMBOL_FUNCTION 5
 #define SYMBOL_NOT_DEFINED 6
+#define SYMBOL_LABEL 7
 
 #define DATATYPE_INT 11
 #define DATATYPE_CHAR 12
@@ -16,6 +17,8 @@
 #define DATATYPE_BOOL 14
 #define DATATYPE_NOT_DEFINED 15
 #define DATATYPE_FUNCTION 16
+
+#define DATATYPE_TEMP 21
 
 typedef struct hash_node
 {
@@ -29,9 +32,12 @@ typedef struct hash_node
 HASH_NODE* Table[HASH_SIZE];
 
 void hashInit(void);
+void hashPrint(void);
 int hashAddress(char *text);
 HASH_NODE* hashInsert(int type, char *text, int dataType, int lineNumber);
 HASH_NODE* hashFind(char *text);
-void hashPrint(void);
+HASH_NODE *makeTemp();
+HASH_NODE *makeLabel();
+HASH_NODE *makeLabelArray(HASH_NODE *node);
 
 #endif
