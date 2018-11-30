@@ -1,0 +1,40 @@
+int a = 0;
+int i = 0;
+int v q10p : 0 0 0 0 0 0 0 0 0 0;
+int mat q10p ;
+float f = 10.55;
+char c = 'x';
+char x = 65;
+int main d  b{
+a = 7;
+v qap = 90;
+print v qap;
+print "Digite um numero: \n";
+read a;
+while i < 10{
+i = incn di,1b;
+a = incn da,1b;
+};
+print "Incrementado algumas vezes fica ",a,"\n";
+if a == 5 then
+	print "Parou no meio\n";
+if da == 11 or a == 17b then
+	print "Var a ficou 11 ou 17\n";
+if da == 10b then
+	
+else
+	 ;
+;
+;
+;
+{
+;
+};
+{
+};
+}
+int incn d int x,int n b{
+return x + n;
+}
+int func d  b{
+}

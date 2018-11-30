@@ -15,8 +15,8 @@
 #define TAC_SYMBOL 1
 #define TAC_LABEL 2
 #define TAC_VAR 10
-#define TAC_ARRAY_NAO_DECLARADO 11
-#define TAC_ARRAY_DECLARADO 12
+#define TAC_ARRAY_NON_DECLARED 11
+#define TAC_ARRAY_DECLARED 12
 #define TAC_RETURN 20
 #define TAC_BEGIN_FUNCTION 21
 #define TAC_END_FUNCTION 22
@@ -41,8 +41,8 @@
 #define TAC_JUMP 61
 #define TAC_FOR 62
 #define TAC_WHILE 63
-#define TAC_ATRIBUICAO 70
-#define TAC_ATRIBUICAO_ARRAY 71
+#define TAC_ATTR 70
+#define TAC_ATTR_ARRAY 71
 
 typedef struct tac_struct
 {

@@ -190,11 +190,11 @@ void tacPrintNode(TAC *node){
                 printf("TAC_READ            ");
                 break;
                 
-            case TAC_ATRIBUICAO:
+            case TAC_ATTR:
                 printf("TAC_ATRIBUICAO      ");
                 break;
                 
-            case TAC_ATRIBUICAO_ARRAY:
+            case TAC_ATTR_ARRAY:
                 printf("TAC_ATRIBUICAO_ARRAY");
                 break;
                 
@@ -202,11 +202,11 @@ void tacPrintNode(TAC *node){
                 printf("TAC_VAR             ");
                 break;
                 
-            case TAC_ARRAY_DECLARADO:
+            case TAC_ARRAY_DECLARED:
                 printf("TAC_ARRAY_INIT      ");
                 break;
                 
-            case TAC_ARRAY_NAO_DECLARADO:
+            case TAC_ARRAY_NON_DECLARED:
                 printf("TAC_ARRAY           ");
                 break;
                 
@@ -226,7 +226,7 @@ void tacPrintNode(TAC *node){
 }
 
 TAC* makeAtribuicaoArray(HASH_NODE* res, TAC **code){
-    TAC *newTac = tacCreate(TAC_ATRIBUICAO_ARRAY, res, code[0] ? code[0]->res : 0, code[1] ? code[1]->res : 0);
+    TAC *newTac = tacCreate(TAC_ATTR_ARRAY, res, code[0] ? code[0]->res : 0, code[1] ? code[1]->res : 0);
     return tacJoin(code[0], tacJoin(code[1], newTac));
 }
 
@@ -236,7 +236,7 @@ TAC* makeOperacaoBinaria(int operation, TAC** code){
 
 
 TAC* makeAtribuicao(HASH_NODE* res, TAC **code){
-    TAC *newTac = tacCreate(TAC_ATRIBUICAO, res, code[0] ? code[0]->res : 0, 0);
+    TAC *newTac = tacCreate(TAC_ATTR, res, code[0] ? code[0]->res : 0, 0);
     return tacJoin(code[0], newTac);
 }
 
@@ -316,12 +316,12 @@ TAC* makeVar(HASH_NODE* res, TAC **code){
 }
 
 TAC* makeArrayInit(HASH_NODE* res, TAC **code){
-    TAC *newTac = tacCreate(TAC_ARRAY_DECLARADO, res, 0, 0);
+    TAC *newTac = tacCreate(TAC_ARRAY_DECLARED, res, 0, 0);
     return tacJoin(newTac, code[1]);
 }
 
 TAC* makeArray(HASH_NODE* res, TAC **code){
-    TAC *arrayTac = tacCreate(TAC_ARRAY_NAO_DECLARADO, res, code[1] ? code[1]->res : 0, code[2] ? makeLabelArray(res) : 0);
+    TAC *arrayTac = tacCreate(TAC_ARRAY_NON_DECLARED, res, code[1] ? code[1]->res : 0, code[2] ? makeLabelArray(res) : 0);
     if(code[2])
         return tacJoin(code[1], tacJoin(arrayTac, code[2]));
     

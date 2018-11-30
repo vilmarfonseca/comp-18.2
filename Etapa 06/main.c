@@ -12,7 +12,7 @@ extern AST_NODE *root;
 
 int main (int argc, char **argv){
     
-
+	yyin = fopen(argv[1], "r");
 	if (argc < 3) 
 	{
 		fprintf(stderr, "Call: ./a input_file output_file\n");
@@ -38,6 +38,7 @@ int main (int argc, char **argv){
     }
     
 	FILE* output = fopen(argv[2], "w");
+	FILE* output2 = stdout;
 
 	if(!output){
 		fprintf(stderr, "Cannot open file \%s\"\n", argv[2]);
@@ -45,11 +46,18 @@ int main (int argc, char **argv){
 	}
 
 
-	printAst(root, output);
+	printAst(root, output2);
 	fprintf(stderr, "Success generating code.\n");
     TAC *tac = tacGenerate(root);
     tacPrintNext(tacReverse(tac));
+
+    fprintf(stderr, "\nWriting Assembly code...\n\n");
+	tac_to_asm(tac, output);
+	fclose(yyin);
 	fclose(output);
+	fclose(output2);
+    fprintf(stderr, "\nWriting Assembly code finished!!\n");
+	
 
 	exit(0);
 
