@@ -1,4 +1,4 @@
 make clean
 make
 ./etapa6 Exemplo.txt out.s
-gcc out.s -o assembler.bin
+gcc -m64 out.s -o assembler.bin

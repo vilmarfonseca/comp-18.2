@@ -23,13 +23,13 @@ void tac_to_asm(TAC* node, FILE* output){
         initParamVar(output);
         init_genco = 1;
     }
-
     for(tac = node; tac; tac = tac->next){
         switch(tac->type){
-            case TAC_VAR:
+            case TAC_VAR:  
                 gencoVarDecl(output, tac);
                 break;
             case TAC_ARRAY_DECLARED:
+                printf(" ");
                 gencoArrayDecl(output, tac);
                 break;
             case TAC_BEGIN_FUNCTION:
@@ -60,18 +60,24 @@ void tac_to_asm(TAC* node, FILE* output){
                 else 
                     fprintf(output, "\tmovl\t$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
                 break;
-            case TAC_ATTR_ARRAY: //value then array index
-                if(tac->op2->type == TAC_LABEL) 
+            case TAC_ATTR_ARRAY:
+                if((tac->op2->type)&&(tac->op2->type == TAC_LABEL)){
                     fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
-                else 
-                    fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
-                if(tac->op1->type == TAC_LABEL) {
-                    fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
-                    fprintf(output, "\tcltq\n");
-                    fprintf(output, "\tmovl\t%%ebx, %s(,%%rax,4)\n", tac->res->text);
                 }
                 else {
-                    fprintf(output, "\tmovl\t%%ebx, %s+%s*4(%%rip)\n", tac->res->text, tac->op1->text);
+                    if(tac->op2->text){
+                        fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
+                    }
+                }
+                if(tac->op1){
+                    if((tac->op1->type)&&(tac->op1->type == TAC_LABEL)) {
+                        fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
+                        fprintf(output, "\tcltq\n");
+                        fprintf(output, "\tmovl\t%%ebx, %s(,%%rax,4)\n", tac->res->text);
+                    }
+                    else {
+                        fprintf(output, "\tmovl\t%%ebx, %s+%s*4(%%rip)\n", tac->res->text, tac->op1->text);
+                    }
                 }
                 break;
             case TAC_PRINT:
@@ -322,9 +328,9 @@ void gencoLongArrayDecl(FILE *output, TAC *tac){
 
     TAC *tmp = tac->next;
     if(tac->op2){
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++, tmp = tmp->next) {
             fprintf(output, "\t.long\t%d\n", atoi(tmp->res->text));
-            tmp = tmp->next;
+            
         }
     }
 }
@@ -344,16 +350,22 @@ void gencoNumOp(TAC* tac, FILE* output){
         default:
             return;
     }
-
-    if(tac->op1->type == TAC_LABEL) 
-        fprintf(output, "\tmovl\t%s(%%rip, %%eax)\n", tac->op1->text);
-    else
-        fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op1->text);
-
-    if(tac->op2->type == TAC_LABEL) 
-        fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
-    else
-        fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
+    if(tac->op1){
+        if(tac->op1->type == TAC_LABEL){
+            fprintf(output, "\tmovl\t%s(%%rip, %%eax)\n", tac->op1->text);
+        }
+        else{
+            fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op1->text);
+        }
+    }
+    if(tac->op2){
+        if(tac->op2->type == TAC_LABEL) {
+            fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
+        }
+        else{
+            fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
+        }
+    }
     
     fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
     fprintf(output, "\tmovl\t%%eax, %s\n", tac->res->text);
