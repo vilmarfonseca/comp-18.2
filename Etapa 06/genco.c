@@ -25,17 +25,22 @@ void tac_to_asm(TAC* node, FILE* output){
     }
     for(tac = node; tac; tac = tac->next){
         switch(tac->type){
-            case TAC_VAR:  
-                gencoVarDecl(output, tac);
+            case TAC_VAR:
+				printf("1\n");
+                //gencoVarDecl(output, tac);
                 break;
             case TAC_ARRAY_DECLARED:
-                printf(" ");
+                printf("2\n");
                 gencoArrayDecl(output, tac);
                 break;
+            case TAC_ARRAY_NON_DECLARED:
+                printf("2.1\n");
+                gencoArrayNDecl(output, tac);
             case TAC_BEGIN_FUNCTION:
+                printf("3\n");
                 if(strcmp(tac->res->text, "main") == 0){
                     fprintf(output, ".PINT:\n\t.string\t\"%%d\\n\"\n"
-                                    ".RINT:\n\t.string\t\"%%d\"n"
+                                    ".RINT:\n\t.string\t\"%%d\\n\"\n"
                                     ".PCHAR:\n\t.string\t\"%%c\\n\"\n");
                     halt_decl = 1;
                 }
@@ -46,14 +51,25 @@ void tac_to_asm(TAC* node, FILE* output){
                             "\tmovq\t%%rsp, %%rbp\n", tac->res->text);
                 break;
             case TAC_END_FUNCTION:
+                printf("4\n");
                 fprintf(output, "\tpopq\t%%rbp\n\tret\n");
                 break;
             case TAC_ADD:
             case TAC_SUB:
             case TAC_MULT:
+            case TAC_DIV:
+                printf("5\n");
                 gencoNumOp(tac, output);
                 break;
+            case TAC_OR:
+            case TAC_AND:
+            case TAC_EQ:
+            case TAC_GE:
+                printf("5.1\n");
+                gencoLogOp(tac, output);
+                break;
             case TAC_ATTR:
+                printf("6\n");
                 if(tac->op1->type == TAC_LABEL || tac->op1->type == SYMBOL_LITINT) 
                     fprintf(output, "\tmovl\t%s(%%rip), %%eax\n"
                                     "\tmovl\t%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
@@ -61,6 +77,7 @@ void tac_to_asm(TAC* node, FILE* output){
                     fprintf(output, "\tmovl\t$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
                 break;
             case TAC_ATTR_ARRAY:
+                //printf("7\n");
                 if((tac->op2->type)&&(tac->op2->type == TAC_LABEL)){
                     fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
                 }
@@ -81,6 +98,7 @@ void tac_to_asm(TAC* node, FILE* output){
                 }
                 break;
             case TAC_PRINT:
+                //printf("8\n");
                 if(tac->op1->dataType == DATATYPE_CHAR) {
                     fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
                     fprintf(output, "\tmovl\t%%eax, %%esi\n");
@@ -104,14 +122,17 @@ void tac_to_asm(TAC* node, FILE* output){
                 }
                 break;
             case TAC_LABEL:
+                //printf("9\n");
                 fprintf(output, "%s:\n", tac->res->text);
                 break;
             case TAC_INCREMENT:
+                //printf("10\n");
                 fprintf(output, "\tmovl\t%s(%%rip), %%eax\n"
                             "\taddl\t$1, %%eax\n"
                             "\tmovl\t%%eax, %s(%%rip)\n", tac->res->text, tac->res->text);
                 break;
             case TAC_LE:
+                //printf("11\n");
                 fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
                 if(tac->op2->type == TAC_SYMBOL || tac->op2->type == SYMBOL_LITINT)
                     fprintf(output, "\tcmpl\t$%s, %%eax\n", tac->op2->text);
@@ -122,16 +143,16 @@ void tac_to_asm(TAC* node, FILE* output){
                 fprintf(output, "\tsetle\t%%al\n");
                 break;
             case TAC_IFZ:
-                if(tac->op1->dataType != DATATYPE_TEMP) 
-                    fprintf(output, "problem\n");
-                else 
-                    fprintf(output, "\tmovzbl\t%%al, %%eax\n");
+                //printf("12\n");
+                fprintf(output, "\tmovzbl\t%%al, %%eax\n");
                 fprintf(output, "\tjz\t%s\n", tac->res->text);
                 break;
             case TAC_JUMP:
+                //printf("13\n");
                 fprintf(output, "\tjmp\t%s\n", tac->res->text);
                 break;
             case TAC_READ:
+                //printf("14\n");
                 if(tac->op1->dataType == DATATYPE_INT) {
                     fprintf(output, "\tmovl\t$%s, %%esi\n", tac->op1->text);
                     fprintf(output, "\tmovl\t$.RINT, %%edi\n");
@@ -140,16 +161,19 @@ void tac_to_asm(TAC* node, FILE* output){
                 }
                 break;
             case TAC_CALL:
+                //printf("15\n");
                 fprintf(output, "\tcall\t%s\n", tac->op1->text);
                 fprintf(output, "\tmovl\t%%eax, %s(%%rip)\n", tac->res->text);
                 break;
             case TAC_RETURN:
+                //printf("16\n");
                 if(tac->op1->type == TAC_LABEL)
                     fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
                 else
                     fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op1->text);
                 break;
             case TAC_ARG:
+                //printf("17\n");
                 if(tac->op1->type == TAC_LABEL)
                     fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
                 else
@@ -258,6 +282,46 @@ void gencoArrayDecl(FILE* output, TAC* tac){
     }
 }
 
+void gencoArrayNDecl(FILE* output, TAC* tac){
+    HASH_NODE* node;
+    if(tac->res){
+        HASH_NODE* node = hashFind(tac->res->text);
+    }
+    else{
+        HASH_NODE* node = NULL;
+    }
+
+    if(node){
+        
+        int size = atoi(tac->op1->text);
+        int litValue = 0;
+        TAC *tmp = tac->next;
+
+
+        fprintf(output, "\t.globl\t%s\n", tac->res->text);
+        fprintf(output, "\t.data\n");
+        fprintf(output, "\t.size\t%s, %d\n", tac->res->text, size);
+        fprintf(output, "%s:\n", tac->res->text);
+
+        if(tac->op2){
+            for (int i = 0; i < size; i++)
+            {
+                if(node->dataType == DATATYPE_CHAR)
+                    litValue = tmp->res->text[1];
+                else{
+                    if(strcmp(tmp->res->text, "TRUE") == 0)
+                        litValue = 1;
+                    else
+                        litValue = 0;
+                }
+                fprintf(output, "\t.byte\t%d\n", litValue);
+                tmp = tmp->next;
+            }
+        }
+        
+    }
+}
+
 void gencoByteLiteralDecl(FILE* output, HASH_NODE* node, TAC* tac){
     int litValue = 0;
 
@@ -347,6 +411,9 @@ void gencoNumOp(TAC* tac, FILE* output){
         case TAC_MULT:
             strcpy(op, "imull");
             break;
+        case TAC_DIV:
+            strcpy(op, "div");
+            break;
         default:
             return;
     }
@@ -369,4 +436,53 @@ void gencoNumOp(TAC* tac, FILE* output){
     
     fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
     fprintf(output, "\tmovl\t%%eax, %s\n", tac->res->text);
+}
+
+void gencoLogOp(TAC* tac, FILE* output){
+    char op[8];
+
+    if(tac->op1){
+        if(tac->op1->type == TAC_LABEL){
+            fprintf(output, "\tmovl\t%s(%%rip, %%eax)\n", tac->op1->text);
+        }
+        else{
+            fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op1->text);
+        }
+    }
+    if(tac->op2){
+        if(tac->op2->type == TAC_LABEL) {
+            fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
+        }
+        else{
+            fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
+        }
+    }
+
+    switch(tac->type){
+        case TAC_OR:
+            strcpy(op, "or");
+            fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
+            fprintf(output, "\tmovl\t%%eax, %s\n", tac->res->text);
+            break;
+        case TAC_AND:
+            strcpy(op, "and");
+            fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
+            fprintf(output, "\tmovl\t%%eax, %s\n", tac->res->text);
+            break;
+        case TAC_EQ:
+            strcpy(op, "cmp");
+            fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
+            fprintf(output, "\tje %s\n", tac->res->text);
+            break;
+        case TAC_GE:
+            strcpy(op, "cmp");
+            fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
+            fprintf(output, "\tjge %s\n", tac->res->text);
+            break;
+        default:
+            return;
+    }
+    
+    
+    
 }

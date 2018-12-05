@@ -49,10 +49,11 @@ int main (int argc, char **argv){
 	printAst(root, output2);
 	fprintf(stderr, "Success generating code.\n");
     TAC *tac = tacGenerate(root);
-    tacPrintNext(tacReverse(tac));
+	TAC *invertedTac = tacReverse(tac);
+    tacPrintNext(invertedTac);
 
     fprintf(stderr, "\nWriting Assembly code...\n\n");
-	tac_to_asm(tac, output);
+	tac_to_asm(invertedTac, output);
 	fclose(yyin);
 	fclose(output);
 	fclose(output2);
